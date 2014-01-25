@@ -18,9 +18,14 @@ title: GreatYao's Blog
   {% endunless %}
   <span>
   </div>
-  <div class="archive">
-    {{ post.content }}
-  </div>
+  <div class="post-entry">
+        {{ post.content || split:'<!--more-->' | first }}
+    </div>
+    <div class="post-footer">
+        <div class="read-more">
+            <a href="{{ post.url }}">More...</a>
+        </div>
+    </div>
   <hr />
   {% endfor %}
 
