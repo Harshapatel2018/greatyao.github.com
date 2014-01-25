@@ -10,10 +10,10 @@ paginate: 4
 title : 隐匿于黑夜中的星
 tagline: 时间的回响，思维的残影
 author :
-  name : codepiano
-  email : anyexingchen999@qq.com
-  github : https://github.com/codepiano
-  twitter : http://twitter.com/anyexingchen
+  name : greatyao
+  email : njustyw@gmail.com
+  github : https://github.com/greatyao
+  twitter : http://twitter.com/greatyao
 
 # The production_url is only used when full-domain names are needed
 # such as sitemap.txt 
@@ -84,7 +84,7 @@ codepiano :
   comments :
     provider : disqus
     disqus :
-      short_name : codepiano
+      short_name : greatyao
    
   # Settings for analytics helper
   # Set 'provider' to the analytics provider you want to use.
