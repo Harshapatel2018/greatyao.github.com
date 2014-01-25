@@ -5,6 +5,8 @@ auto: true
 pygments: true
 # 分页配置，每页最多显示几篇文章
 paginate: 8
+destination: _site  
+truncate: 300 
 
 # 修改为自己的配置
 title : 你好世界
@@ -114,6 +116,3 @@ codepiano :
   # and include your custom code. Your custom file must be defined at:
   #   ./_includes/custom/[HELPER]
   # where [HELPER] is the name of the helper you are overriding.
-
- destination: _site  
-truncate: 300  
