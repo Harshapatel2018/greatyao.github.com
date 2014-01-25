@@ -5,6 +5,6 @@ categories: 随想
 tags: 扯淡
 ---
 
-　　刚用github+jekyll搭建好,找了很多资料，奈何水平实在太差，最终找了个简单的模板改改拿来用了，能做的修改都很少。
+　　终于用github+jekyll搭建好个人博客,这是第一篇日志。
+	感谢[codepiano](https://github.com/codepiano)的模板。
 
-　　暂时还不知道拿来写点啥，以后再说。
