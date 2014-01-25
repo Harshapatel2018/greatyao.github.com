@@ -8,11 +8,10 @@ tags: GitHub 转载
 原文链接<https://gitcafe.com/riku/Markdown-Syntax-CN/blob/master/syntax.md>  
 知道有Markdown这个东西，瞬间就喜欢上了，现在不正在用他写这篇文章么,所以转了一篇语法介绍,改了点内容，顺便做点测试。这个说明只有
 基本的语法。不涉及Markdown Extra。
-本文也可以作为一个例子，[本文地址](https://github.com/one-point/one-point.github.io/blob/master/_posts/2013-12-29-markdownsyntax.md)
 
 Markdown 语法说明 (简体中文版) 
 ================
-
+<!--more-->
 *   [概述](#overview)
     *   [宗旨](#philosophy)
     *   [兼容 HTML](#html)
