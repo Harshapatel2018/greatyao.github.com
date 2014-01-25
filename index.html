@@ -19,9 +19,8 @@ title: GreatYao's Blog
   <span>
   </div>
   <div class="post-meta">
-  <p class="truncate">{{ post.content | strip_html | truncate: 200 }}</p>
+  {{ post.content | strip_html | truncate: 200 }}
   </div>
-	</div>
   <hr />
   {% endfor %}
 
