@@ -19,14 +19,8 @@ title: GreatYao's Blog
   <span>
   </div>
   <div class="post-meta">
-  <div class="post-entry">
-        {{ post.content || split:'<!--more-->' | first }}
-    </div>
-    <div class="post-footer">
-        <div class="read-more">
-            <a href="{{ post.url }}">More...</a>
-        </div>
-    </div>
+  <p class="truncate">{{ post.content | strip_html | truncate: 200 }}</p>
+  </div>
 	</div>
   <hr />
   {% endfor %}
