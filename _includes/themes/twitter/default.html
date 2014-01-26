@@ -51,17 +51,24 @@
   <body>
 
     <div class="navbar">
-      <div class="navbar-inner">
-        <div class="container">
-          <a class="brand" href="{{ HOME_PATH }}">{{ site.title }}</a>
-          <ul class="nav">
-            {% assign pages_list = site.pages %}
+        <div class="navbar-inner row-fluid">
+          <div class="span2">
+          </div>
+          <div class="span8">
+            <a class="brand" href="{{ HOME_PATH }}">
+              <span class="site-author"> {{ site.author.name }} </span>
+              <span class="site-title"> /* {{ site.title }} */ </span>
+            </a>
+            <ul class="nav">
+              {% assign pages_list = site.pages %}
               {% assign group = 'navigation' %}
               {% include codepiano/navigation_list %}
-          </ul>
+            </ul>
+          </div>
+          <div class="span2">
+          </div>
         </div>
       </div>
-    </div>
 
     <div class="container">
 
