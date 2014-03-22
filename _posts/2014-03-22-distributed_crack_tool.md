@@ -5,7 +5,7 @@ title: "开发日志几则"
 categories: [代码, 工作]
 tags: [OpenCL, 工作]
 group: archive
-icon: code
+icon: leaf
 ---
 {% include codepiano/setup %}
 
