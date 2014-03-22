@@ -50,7 +50,11 @@ int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
 	pipe(fd1);
 	pipe(fd2);
 	
-	if((pid = fork()) == 0)//子进程
+	if((pid = fork()) < 0)
+	{
+		return -1;
+	}
+	else if(pid == 0)//子进程
 	{
 		close(fd1[1]);
 		close(fd2[0]);
@@ -65,7 +69,7 @@ int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
 
 		execv(path, args);
 	}
-	else if(pid > 0)//父进程
+	else//父进程
 	{
 		close(fd1[0]);
 		close(fd2[1]);   
@@ -75,18 +79,12 @@ int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
 		struct param p = {pid, fd2[0], fd1[1]};
 		tables[uid] = p;
 	
-		{
-			thread_param* p = (thread_param*)malloc(sizeof(*p));
-			pthread_t tid;
-			p->uid = uid;
-			p->inst = this;
-			pthread_create(&tid, NULL, monitor, (void *)p);
-		}
+		thread_param* pp = (thread_param*)malloc(sizeof(*pp));
+		pthread_t tid;
+		pp->uid = uid;
+		pp->inst = this;
+		pthread_create(&tid, NULL, monitor, (void *)pp);
 		return pid;
-	}
-	else
-	{
-		return -1;
 	}
 }
 public:
@@ -163,9 +161,9 @@ public:
 		
 		while(1)
 		{
-			n = instance->Read(uid, buffer, sizeof(buffer));
+			n = inst->Read(uid, buffer, sizeof(buffer));
 			if(n == ERR_CHILDEXIT) {
-				fprintf(stdout, "Detected child exit\n");
+				printf("Detected child exit\n");
 				break;
 			}else if(n <= 0){
 				continue;
@@ -177,7 +175,7 @@ public:
 			n = inst->Write(uid, "\n", 1);
 			if(n == ERR_CHILDEXIT)
 			{			
-				fprintf(stderr, "Detected child exit2\n");
+				printf("Detected child exit2\n");
 				break;
 			}
 		}
