@@ -26,119 +26,119 @@ icon: leaf
 class Parent
 {
 protected:
-	struct param
-	{
-		int pid;
-		int read_fd;
-		int write_fd;
-	};
-	map<int, struct param> tables;
-	
-	struct thread_param
-	{
-		int uid;
-		Parent* inst;
-	};
-	
-	//uid是标志符，用以区分每次调用
-	int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
-	{
-		int fd1[2], fd2[2];
-		int pid;
-		
-		//两次pipe实现全双工
-		pipe(fd1);
-		pipe(fd2);
-		
-		if((pid = fork()) == 0)//子进程
-		{
-			close(fd1[1]);
-			close(fd2[0]);
-			close(0);
-			close(1);
-			close(2);
-			dup2(fd1[0], 0);
-			dup2(fd2[1], 1);
-			dup2(fd2[1], 2);
-			close(fd1[0]);  
-			close(fd2[1]);
+struct param
+{
+	int pid;
+	int read_fd;
+	int write_fd;
+};
+map<int, struct param> tables;
 
-			execv(path, args);
-		}
-		else if(pid > 0)//父进程
-		{
-			close(fd1[0]);
-			close(fd2[1]);   
-			int flag = fcntl(fd2[0], F_GETFL, 0);
-			fcntl(fd2[0], F_SETFL, flag|O_NONBLOCK);
-		
-			struct param p = {pid, fd2[0], fd1[1]};
-			tables[uid] = p;
-		
-			{
-				thread_param* p = (thread_param*)malloc(sizeof(*p));
-				pthread_t tid;
-				p->uid = uid;
-				p->inst = this;
-				pthread_create(&tid, NULL, monitor, (void *)p);
-			}
-			return pid;
-		}
-		else
-		{
-			return -1;
-		}
+struct thread_param
+{
+	int uid;
+	Parent* inst;
+};
+
+//uid是标志符，用以区分每次调用
+int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
+{
+	int fd1[2], fd2[2];
+	int pid;
+	
+	//两次pipe实现全双工
+	pipe(fd1);
+	pipe(fd2);
+	
+	if((pid = fork()) == 0)//子进程
+	{
+		close(fd1[1]);
+		close(fd2[0]);
+		close(0);
+		close(1);
+		close(2);
+		dup2(fd1[0], 0);
+		dup2(fd2[1], 1);
+		dup2(fd2[1], 2);
+		close(fd1[0]);  
+		close(fd2[1]);
+
+		execv(path, args);
 	}
+	else if(pid > 0)//父进程
+	{
+		close(fd1[0]);
+		close(fd2[1]);   
+		int flag = fcntl(fd2[0], F_GETFL, 0);
+		fcntl(fd2[0], F_SETFL, flag|O_NONBLOCK);
+	
+		struct param p = {pid, fd2[0], fd1[1]};
+		tables[uid] = p;
+	
+		{
+			thread_param* p = (thread_param*)malloc(sizeof(*p));
+			pthread_t tid;
+			p->uid = uid;
+			p->inst = this;
+			pthread_create(&tid, NULL, monitor, (void *)p);
+		}
+		return pid;
+	}
+	else
+	{
+		return -1;
+	}
+}
 public:
-	//调用接口
-	int StartCrack(int uid, void* other_params)
-	{
-		//...
-		return this->Lauch(uid, other_params);
-	}
-	
-	//从输出流中读取
-	int Read(int uid, char* buf, int n)
-	{
-		//获取该uid相关的子进程id
-		map<int, param>::iterator it = tables.find(uid);
-		int pid = it->second.pid;
-
-		//检测子进程是否结束，这样可以避免僵死进程
-		int status = -1;
-		int rv = waitpid(pid, &status, WNOHANG);
-		if(rv > 0){
-			CleanUp(uid);	//从tables中清楚该entry
-			return ERR_CHILDEXIT;//子进程已经结束		
-		}
-		
-		//读操作
-		int fd = it->second.read_fd;
-		return read(fd, buf, n);
-	}
-
-	//往输入流中写
-	int Write(int uid, const char* buf, int n)
-	{
-		//获取该uid相关的子进程id
-		map<int, param>::iterator it = tables.find(uid);
-		int pid = it->second.pid;
-
-		//检测子进程是否结束，这样可以避免僵死进程
-		int status = -1;
-		int rv = waitpid(pid, &status, WNOHANG);
-		if(rv > 0){
-			CleanUp(uid);
-			return ERR_CHILDEXIT;
-		}
-		
-		//写操作
-		int fd = it->second.write_fd;
-		return write(fd, buf, n);
+//调用接口
+int Start(int uid, void* other_params)
+{
+	//...
+	return this->Lauch(uid, other_params);
 }
 
-	//由派生类具体实现
-	virtual int Lauch(int uid, void* other_params) = 0;		
+//从输出流中读取
+int Read(int uid, char* buf, int n)
+{
+	//获取该uid相关的子进程id
+	map<int, param>::iterator it = tables.find(uid);
+	int pid = it->second.pid;
+
+	//检测子进程是否结束，这样可以避免僵死进程
+	int status = -1;
+	int rv = waitpid(pid, &status, WNOHANG);
+	if(rv > 0){
+		CleanUp(uid);	//从tables中清除该entry
+		return ERR_CHILDEXIT;//子进程已经结束		
+	}
+	
+	//读操作
+	int fd = it->second.read_fd;
+	return read(fd, buf, n);
+}
+
+//往输入流中写
+int Write(int uid, const char* buf, int n)
+{
+	//获取该uid相关的子进程id
+	map<int, param>::iterator it = tables.find(uid);
+	int pid = it->second.pid;
+
+	//检测子进程是否结束，这样可以避免僵死进程
+	int status = -1;
+	int rv = waitpid(pid, &status, WNOHANG);
+	if(rv > 0){
+		CleanUp(uid);
+		return ERR_CHILDEXIT;
+	}
+	
+	//写操作
+	int fd = it->second.write_fd;
+	return write(fd, buf, n);
+}
+
+//由派生类具体实现
+virtual int Lauch(int uid, void* other_params) = 0;		
 }
 
 class ChildA : Parent
@@ -190,7 +190,7 @@ public:
 接下来的事情就很简单了，只需要具体就某个解密软件的输入输出进行解析和分析就可以了。剩下来的就是资源调度方面的事情了，这个逻辑也很直观，从资源池中取可用的计算资源，然后从服务端取解密任务，然后调用上述框架调用某个解密软件即可，在MonitorThread里面读取解密进度，随时上报服务端。
 解密结束之后将结果上报服务端，同时资源池将资源回收。
 
-#其他模块
+# 其他模块
 这只是计算节点的主要开发工作，至于服务端和用户控制端的逻辑更加负责，真是任重道远啊，
 
 #
