@@ -1,12 +1,11 @@
 ---
 layout: post
 keywords: 分布式 GPU 解密
-description: happy,new,year
 title: "开发日志几则"
 categories: [代码, 工作]
 tags: [OpenCL, 工作]
 group: archive
-icon: leaf
+icon: code
 ---
 {% include codepiano/setup %}
 
