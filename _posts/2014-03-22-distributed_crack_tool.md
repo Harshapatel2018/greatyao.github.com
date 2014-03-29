@@ -1,7 +1,7 @@
 ---
 layout: post
-keywords: 分布式 GPU 解密
-title: "重定向管道"
+keywords: 分布式 重定向 Linux
+title: "管道重定向"
 categories: [代码, 工作]
 tags: [OpenCL, 工作]
 group: archive
