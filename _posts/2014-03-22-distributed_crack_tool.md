@@ -25,78 +25,79 @@ icon: leaf
 class Parent
 {
 protected:
-struct param
-{
-	int pid;
-	int read_fd;
-	int write_fd;
-};
-map<int, struct param> tables;
+  struct param
+  {
+    int pid;
+    int read_fd;
+    int write_fd;
+  };
+  map<int, struct param> tables;
 
-struct thread_param
-{
-	int uid;
-	Parent* inst;
-};
+  struct thread_param
+  {
+    int uid;
+    Parent* inst;
+  };
 
-//uid是标志符，用以区分每次调用
-int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
-{
-	int fd1[2], fd2[2];
-	int pid;
+  //uid是标志符，用以区分每次调用
+  int Exec(int uid, const char* path, const char* args[], void* (*monitor)(void*))
+  {
+    int fd1[2], fd2[2];
+    int pid;
 	
-	//两次pipe实现全双工
-	pipe(fd1);
-	pipe(fd2);
+    //两次pipe实现全双工
+    pipe(fd1);
+    pipe(fd2);
+    
+    if((pid = fork()) < 0)
+    {
+      return -1;
+    }
+    else if(pid == 0)//子进程
+    {
+      close(fd1[1]);
+      close(fd2[0]);
+      close(0);
+      close(1);
+      close(2);
+      dup2(fd1[0], 0);
+      dup2(fd2[1], 1);
+      dup2(fd2[1], 2);
+      close(fd1[0]);  
+      close(fd2[1]);
+      
+      execv(path, args);
+    }
+    else//父进程
+    {
+	close(fd1[0]);
+	close(fd2[1]);   
+	int flag = fcntl(fd2[0], F_GETFL, 0);
+	fcntl(fd2[0], F_SETFL, flag|O_NONBLOCK);
 	
-	if((pid = fork()) < 0)
-	{
-		return -1;
-	}
-	else if(pid == 0)//子进程
-	{
-		close(fd1[1]);
-		close(fd2[0]);
-		close(0);
-		close(1);
-		close(2);
-		dup2(fd1[0], 0);
-		dup2(fd2[1], 1);
-		dup2(fd2[1], 2);
-		close(fd1[0]);  
-		close(fd2[1]);
-
-		execv(path, args);
-	}
-	else//父进程
-	{
-		close(fd1[0]);
-		close(fd2[1]);   
-		int flag = fcntl(fd2[0], F_GETFL, 0);
-		fcntl(fd2[0], F_SETFL, flag|O_NONBLOCK);
+	struct param p = {pid, fd2[0], fd1[1]};
+	tables[uid] = p;
 	
-		struct param p = {pid, fd2[0], fd1[1]};
-		tables[uid] = p;
-	
-		thread_param* pp = (thread_param*)malloc(sizeof(*pp));
-		pthread_t tid;
-		pp->uid = uid;
-		pp->inst = this;
-		pthread_create(&tid, NULL, monitor, (void *)pp);
-		return pid;
-	}
-}
+	thread_param* pp = (thread_param*)malloc(sizeof(*pp));
+	pthread_t tid;
+	pp->uid = uid;
+	pp->inst = this;
+	pthread_create(&tid, NULL, monitor, (void *)pp);
+	return pid；
+    }
+  }
+  
 public:
-//调用接口
-int Start(int uid, void* other_params)
-{
-	//...
-	return this->Lauch(uid, other_params);
-}
+  //调用接口
+  int Start(int uid, void* other_params)
+  {
+     //...
+     return this->Lauch(uid, other_params);
+  }
 
-//从输出流中读取
-int Read(int uid, char* buf, int n)
-{
+  //从输出流中读取
+  int Read(int uid, char* buf, int n)
+  {
 	//获取该uid相关的子进程id
 	map<int, param>::iterator it = tables.find(uid);
 	int pid = it->second.pid;
@@ -105,18 +106,18 @@ int Read(int uid, char* buf, int n)
 	int status = -1;
 	int rv = waitpid(pid, &status, WNOHANG);
 	if(rv > 0){
-		CleanUp(uid);	//从tables中清除该entry
-		return ERR_CHILDEXIT;//子进程已经结束		
+	  CleanUp(uid);	//从tables中清除该entry
+	  return ERR_CHILDEXIT;//子进程已经结束		
 	}
 	
 	//读操作
 	int fd = it->second.read_fd;
 	return read(fd, buf, n);
-}
+  }
 
-//往输入流中写
-int Write(int uid, const char* buf, int n)
-{
+  //往输入流中写
+  int Write(int uid, const char* buf, int n)
+  {
 	//获取该uid相关的子进程id
 	map<int, param>::iterator it = tables.find(uid);
 	int pid = it->second.pid;
@@ -125,62 +126,63 @@ int Write(int uid, const char* buf, int n)
 	int status = -1;
 	int rv = waitpid(pid, &status, WNOHANG);
 	if(rv > 0){
-		CleanUp(uid);
-		return ERR_CHILDEXIT;
+	  CleanUp(uid);
+	  return ERR_CHILDEXIT;
 	}
 	
 	//写操作
 	int fd = it->second.write_fd;
 	return write(fd, buf, n);
-}
+  }
 
-//由派生类具体实现
-virtual int Lauch(int uid, void* other_params) = 0;		
-}
+  //由派生类具体实现
+  virtual int Lauch(int uid, void* other_params) = 0;		
+};
 
 class ChildA : Parent
 {
 public:
-	int Lauch(int uid, void* other_params)
-	{
-		//以下根据具体每个Child和相应的params做一些特定的初始化
-		...
+  int Lauch(int uid, void* other_params)
+  {
+    //以下根据具体每个Child和相应的params做一些特定的初始化
+    ...
 		
-		return this->Exec(uid, path, args, MonitorThread);
-	}
+    return this->Exec(uid, path, args, MonitorThread);
+  }
 	
-	//派生类需要实现这样一个线程，用以操控子进程的输出输入流
-	static void*MoitorThread(void* p)
-	{
-		thread_param* param = (thread_param*)p;
-		ChildA* inst = (Child*)param->inst;
-		int uid = param->uid;
-		char buffer[4096];
-		int n;
+  //派生类需要实现这样一个线程，用以操控子进程的输出输入流
+  static void*MoitorThread(void* p)
+  {
+    thread_param* param = (thread_param*)p;
+    ChildA* inst = (Child*)param->inst;
+    int uid = param->uid;
+    char buffer[4096];
+    int n;
 		
-		while(1)
-		{
-			n = inst->Read(uid, buffer, sizeof(buffer));
-			if(n == ERR_CHILDEXIT) {
-				printf("Detected child exit\n");
-				break;
-			}else if(n <= 0){
-				continue;
-			} 
+    while(1)
+    {
+	n = inst->Read(uid, buffer, sizeof(buffer));
+	if(n == ERR_CHILDEXIT) {
+	  printf("Detected child exit\n");
+	  break;
+	}else if(n <= 0){
+	  continue;
+	} 
 			
-			//对输出buffer进行解析
-			
-			//必要时可以操控输入流
-			n = inst->Write(uid, "\n", 1);
-			if(n == ERR_CHILDEXIT)
-			{			
-				printf("Detected child exit2\n");
-				break;
-			}
-		}
+	//对输出buffer进行解析
+	...	
 		
-		return NULL;
+	//必要时可以操控输入流
+	n = inst->Write(uid, "\n", 1);
+	if(n == ERR_CHILDEXIT)
+	{			
+	  printf("Detected child exit2\n");
+	  break;
 	}
+    }
+		
+    return NULL;
+  }
 };
 {% endhighlight %}
 
@@ -188,7 +190,7 @@ public:
 解密结束之后将结果上报服务端，同时资源池将资源回收。
 
 # 其他模块
-这只是计算节点的主要开发工作，至于服务端和用户控制端的逻辑更加负责，真是任重道远啊，
+这只是计算节点的主要开发工作，至于服务端和用户控制端的逻辑更加复杂，真是任重道远啊，
 
 # 持续
 只能寄希望于其他几个小伙伴更加给力点，争取尽快联调好，将原型做出来。
