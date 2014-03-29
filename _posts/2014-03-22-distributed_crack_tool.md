@@ -1,7 +1,7 @@
 ---
 layout: post
 keywords: 分布式 GPU 解密
-title: "开发日志几则"
+title: "重定向管道"
 categories: [代码, 工作]
 tags: [OpenCL, 工作]
 group: archive
