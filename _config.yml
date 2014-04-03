@@ -7,6 +7,7 @@ pygments: true
 paginate: 8
 destination: _site  
 truncate: 300 
+markdown: kramdown
 
 # 修改为自己的配置
 title : 你好世界
@@ -26,7 +27,7 @@ author :
 # Finally if you are pushing to a GitHub project page, include the project name at the end.
 #
 # 博客地址，如果没有自定义CNAME，写用户名即可
-production_url : http://www.greatyao.me
+production_url : http://blog.greatyao.me
 
 # All Jekyll-Bootstrap specific configurations are namespaced into this hash
 # 我使用我的id作为了这个属性的属性名
