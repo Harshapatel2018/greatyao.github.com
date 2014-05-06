@@ -2,7 +2,7 @@
 layout: post
 title: Introduction to ASMLibrary
 tagline: null
-category: null
+category: 代码
 keywords: ASMLibrary
 tags: [技术 代码]
 group: archive
