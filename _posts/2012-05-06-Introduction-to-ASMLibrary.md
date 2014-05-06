@@ -3,9 +3,15 @@ layout: post
 title: Introduction to ASMLibrary
 tagline: null
 category: null
-tags: []
+keywords: 陷阱 网络编程 C++
+tags: [技术 代码]
+group: archive
+icon: leaf
 published: true
 ---
+
+{% include codepiano/setup %}
+
 ## Overview
 
 Active Shape Model Library (ASMLibrary©) SDK, which is is developped under OpenCV for face alignment and face tracking. 
