@@ -21,6 +21,7 @@ Anyone who has the problem can goto the [Google Group](http://groups.google.com/
 ### Build active shape models
 
     Usage: build [options] train_path image_ext point_ext cascade_name model_file 
+    
  * Build asmmodel from 240-images of imm-database which you can download from Stagmman's homepage. 
  
     > build -i 0 -p 3 -l 8 -t 0.98 ../immdatabase bmp asf haarcascade_frontalface_alt2.xml aamapi.amf 
