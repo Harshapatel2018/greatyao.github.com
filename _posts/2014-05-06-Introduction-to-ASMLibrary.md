@@ -22,23 +22,28 @@ Anyone who has the problem can goto the [Google Group](http://groups.google.com/
 
     Usage: build [options] train_path image_ext point_ext cascade_name model_file 
  * Build asmmodel from 240-images of imm-database which you can download from Stagmman's homepage. 
-    build -i 0 -p 3 -l 8 -t 0.98 ../immdatabase bmp asf haarcascade_frontalface_alt2.xml aamapi.amf 
+ 
+    > build -i 0 -p 3 -l 8 -t 0.98 ../immdatabase bmp asf haarcascade_frontalface_alt2.xml aamapi.amf 
 
  * Build asmmodel from FRANCK-database which you can download from Cootes's homepage. 
-     build -i 1 -p 4 -l 8 ../franck jpg pts haarcascade_frontalface_alt2.xml franck.amf  
+
+    > build -i 1 -p 4 -l 8 ../franck jpg pts haarcascade_frontalface_alt2.xml franck.amf  
 
 ### Fit using active shape models
 
     Usage: fit -m model_file -h cascade_file {-i image_file | -v video_file | -c camara_idx} -n n_iteration
 
  * Image alignment on an image using 30 iterations
-<blockquote>fit -m my.amf -h haarcascade_frontalface_alt2.xml -i aa.jpg -n 30</blockquote> 
+
+    > fit -m my.amf -h haarcascade_frontalface_alt2.xml -i aa.jpg -n 30
 
  * Face tracking on a video file
-        > fit -m my.amf -h haarcascade_frontalface_alt2.xml -v bb.avi -n 25
+
+    > fit -m my.amf -h haarcascade_frontalface_alt2.xml -v bb.avi -n 25
 
  * Face tracking on live camara
-        >  fit -m my.amf -h haarcascade_frontalface_alt2.xml -c 0 
+
+    > fit -m my.amf -h haarcascade_frontalface_alt2.xml -c 0 
 
 ### Download
 
