@@ -6,7 +6,7 @@ category: null
 tags: []
 published: true
 ---
-## Overview ## 
+## Overview
 
 Active Shape Model Library (ASMLibrary©) SDK, which is is developped under OpenCV for face alignment and face tracking. 
 
@@ -16,20 +16,20 @@ Anyone who has the problem can goto the [Google Group](http://groups.google.com/
 
 ![image](/assets/post-images/null-cd0fb4cd-fb92-47de-cc6d-c66b462d0c91.jpg)
 
-## A Quick Tutorial ##
+## A Quick Tutorial
 
-### Build active shape models ### 
+### Build active shape models
 
-Usage: build [options] train_path image_ext point_ext cascade_name model_file 
+    Usage: build [options] train_path image_ext point_ext cascade_name model_file 
  * Build asmmodel from 240-images of imm-database which you can download from Stagmman's homepage. 
-        > build -i 0 -p 3 -l 8 -t 0.98 ../immdatabase bmp asf haarcascade_frontalface_alt2.xml aamapi.amf 
+    build -i 0 -p 3 -l 8 -t 0.98 ../immdatabase bmp asf haarcascade_frontalface_alt2.xml aamapi.amf 
 
  * Build asmmodel from FRANCK-database which you can download from Cootes's homepage. 
-        > build -i 1 -p 4 -l 8 ../franck jpg pts haarcascade_frontalface_alt2.xml franck.amf  
+     build -i 1 -p 4 -l 8 ../franck jpg pts haarcascade_frontalface_alt2.xml franck.amf  
 
-### Fit using active shape models ### 
+### Fit using active shape models
 
-Usage: fit -m model_file -h cascade_file {-i image_file | -v video_file | -c camara_idx} -n n_iteration
+    Usage: fit -m model_file -h cascade_file {-i image_file | -v video_file | -c camara_idx} -n n_iteration
 
  * Image alignment on an image using 30 iterations
 <blockquote>fit -m my.amf -h haarcascade_frontalface_alt2.xml -i aa.jpg -n 30</blockquote> 
@@ -40,17 +40,17 @@ Usage: fit -m model_file -h cascade_file {-i image_file | -v video_file | -c cam
  * Face tracking on live camara
         >  fit -m my.amf -h haarcascade_frontalface_alt2.xml -c 0 
 
-### Download ### 
+### Download
 
 Stable version：[asmlibrary-6.0.tar.gz](https://github.com/greatyao/asmlibrary/archive/master.zip) 
 
-[View source code at github.com](https://github.com/greatyao/asmlibrary)
+View source code at [github.com](https://github.com/greatyao/asmlibrary)
 
-### Donate ### 
+### Donate ###
 
 If you like the library, please Donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CS9NXZETE7X4L).
 
-### 使用说明 ### 
+### 使用说明 ###
 
 ASMLibrary包括离线训练模型和在线实时匹配两大部分。 
 
