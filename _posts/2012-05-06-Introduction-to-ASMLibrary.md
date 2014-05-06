@@ -3,7 +3,7 @@ layout: post
 title: Introduction to ASMLibrary
 tagline: null
 category: null
-keywords: 陷阱 网络编程 C++
+keywords: ASMLibrary
 tags: [技术 代码]
 group: archive
 icon: leaf
@@ -14,7 +14,7 @@ published: true
 
 ## Overview
 
-Active Shape Model Library (ASMLibrary©) SDK, which is is developped under OpenCV for face alignment and face tracking. 
+Active Shape Model Library (ASMLibrary©) SDK, which is is developped under OpenCV for face alignment and face tracking. You can use ASMLibrary on ** Windows, Linux and Android platforms **.
 
 When you build ASM model, you must have an image database associated with its annotation files. ASMlibrary supports asf and pts format. For pts, you can refer to [BioId、XM2VTS、FGNet databases](http://personalpages.manchester.ac.uk/staff/timothy.f.cootes/tfc_software.html)  annotated by Time Cootes. For asf, please refer to [IMM database](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=922)  annotated by Mikkel Stegmann. Generally speaking, The database should contain at least several hundreds images.  
 
