@@ -7,7 +7,6 @@ keywords: ASMLibrary
 tags: [技术 代码]
 group: archive
 icon: leaf
-published: true---
 
 {% include codepiano/setup %}
 
