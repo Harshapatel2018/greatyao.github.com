@@ -7,8 +7,7 @@ keywords: ASMLibrary
 tags: [技术 代码]
 group: archive
 icon: leaf
-published: true
----
+published: true---
 
 {% include codepiano/setup %}
 
@@ -60,7 +59,7 @@ View source code at [github.com](https://github.com/greatyao/asmlibrary)
 
 ### Donate ###
 
-If you like the library, please Donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CS9NXZETE7X4L).
+Your donation will help me to improve ASMLibrary. You can donate via [PayPal](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CS9NXZETE7X4L) .
 
 ### 使用说明 ###
 
@@ -70,4 +69,5 @@ ASMLibrary包括离线训练模型和在线实时匹配两大部分。
 
 当模型训练完毕之后，可以对任意图像进行人脸对齐，或者对视频文件或者摄像头进行特征点跟踪。 
 
-如果你认可ASMLibrary库，支持ASMLibrary的继续更新和改进，欢迎你以自愿捐助方式进行捐助。 捐助链接设置在[支付宝](https://me.alipay.com/asmlibrary)。
+如果你认可ASMLibrary库，你可以自愿捐款给我以支持ASMLibrary的继续更新和改进。 我的支持宝帐号是![image](/assets/post-images/2012-05-06-d4179610-d0ab-4412-ead2-53470c6ae8bd.gif)，你也可以直接扫描下面的二维码支付。
+![image](/assets/post-images/2012-05-06-71cfb9a6-96b9-4ced-d5ea-b6901680eba9.png)
