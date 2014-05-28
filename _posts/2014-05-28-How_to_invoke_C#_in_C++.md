@@ -14,6 +14,7 @@ published: true
 # C++和C#的调用
 
 C++中的结构体定义
+{% highlight cpp %} 
 struct CPPStruct
 {
 	int a;
@@ -21,6 +22,7 @@ struct CPPStruct
 	short c;
 	char d[32];
 };
+{% endhighlight %}
 
 C#中的结构体定义
 namespace CSharpLibrary
@@ -42,7 +44,7 @@ namespace CSharpLibrary
 * C++工程中必须开启公共语言运行时/clr的支持
 * 在C++使用using namespace来访问C#中的类和方法，采用gcnew访问托管对象，注意使用帽子‘^’，而不是星星‘*’
   using namespace CSharpLibrary; 
-	CSharpClass ^dll = gcnew CSharpClass(); 
+  CSharpClass ^dll = gcnew CSharpClass(); 
 
 #第一种实现
 
@@ -63,20 +65,22 @@ public void CSharpSimpleInterface(ref IntPtr results, int num)
 }
     
 
-C++
-
+OK，现在我们在C++进行如下调用即可
+{% highlight cpp %} 
 int num = 10;
 struct CPPStruct* sAA = new struct CPPStruct[num];
 dll->CSharpSimpleInterface((System::IntPtr)sAA, num);
 //
 ...UI显示等
 for(int i = 0; i < num; i++)
-		printf("%d: (%d,%d,%d,%s)\n", i, sAA[i].a, sAA[i].b, sAA[i].c, sAA[i].d);
+	printf("%d: (%d,%d,%d,%s)\n", i, sAA[i].a, sAA[i].b, sAA[i].c, sAA[i].d);
+{% endhighlight %}
 		
 #第二种实现
 如果num数很大，或者每条信息的生成都比较耗时(比如Web异步调用)，这样将导致CSharpSimpleInterface的调用时间变长，另一种可行的方法是使用回调函数来处理。
 
 C++定义了如下的回调函数来处理单条数据
+{% highlight cpp %} 
 int WINAPI cpp_callback(void* p, void* p2)
 {
 	struct CPPStruct* a = (struct CPPStruct*)p;
@@ -88,6 +92,7 @@ int WINAPI cpp_callback(void* p, void* p2)
 	//::MessageBoxA(NULL, "fuckyou", a->d, 0);
 	return 0;
 }
+{% endhighlight %}
 
 C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过统一的接口调用不同的实现。但二者又有明显的区别，简单说来，委托对象是真正的对象，而函数指针变量只是函数的入口地址。
 
@@ -121,6 +126,9 @@ C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过
       } 
   }
   
-  OK,现在转到C++，
+  OK,现在转到C++
+  {% highlight cpp %} 
   vector<struct CPPStruct> sAA;
   dll->CSharpCallbackInterface((System::IntPtr)&cpp_callback, (System::IntPtr)&sAA, 1000);
+  {% endhighlight %}
+
