@@ -40,13 +40,16 @@ namespace CSharpLibrary
 }
 {% endhighlight %} 
 
-* C++和C#的结构体的内存布局必须一致
-* 在C++中使用#using引用C#生成的DLL
-    #using "..\release\CSharpLibrary.dll" 
-* C++工程中必须开启公共语言运行时/clr的支持
-* 在C++使用using namespace来访问C#中的类和方法，采用gcnew访问托管对象，注意使用帽子‘^’，而不是星星‘*’
-    using namespace CSharpLibrary; 
-    CSharpClass ^dll = gcnew CSharpClass(); 
+ * C++和C#的结构体的内存布局必须一致
+
+ * 在C++中使用#using引用C#生成的DLL
+    > #using "..\release\CSharpLibrary.dll" 
+
+ * C++工程中必须开启公共语言运行时/clr的支持
+ 
+ * 在C++使用using namespace来访问C#中的类和方法，采用gcnew访问托管对象，注意使用帽子‘^’，而不是星星‘*’
+    > using namespace CSharpLibrary; 
+    > CSharpClass ^dll = gcnew CSharpClass(); 
 
 #第一种实现
 
@@ -100,10 +103,12 @@ int WINAPI cpp_callback(void* p, void* p2)
 C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过统一的接口调用不同的实现。但二者又有明显的区别，简单说来，委托对象是真正的对象，而函数指针变量只是函数的入口地址。
 
 与cpp_callback函数相对应，在C#中定义如下的一个委托
+
     > [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
     > public delegate int CALLBACK(IntPtr a, IntPtr b);
   
 采用Marshal.GetDelegateForFunctionPointer来转换一个函数指针为一个委托
+
     > CALLBACK callback = (CALLBACK)Marshal.GetDelegateForFunctionPointer(func, typeof(CALLBACK));
  
 完整代码如下
