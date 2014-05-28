@@ -2,7 +2,7 @@
 layout: post
 keywords: 陷阱 网络编程 C++
 title: "开发陷阱几则"
-categories: [C++]
+categories: [CPP, 网络编程]
 tags: [代码, 工作]
 group: archive
 icon: leaf
