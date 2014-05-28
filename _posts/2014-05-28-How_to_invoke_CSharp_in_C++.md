@@ -110,7 +110,7 @@ C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过
 {% highlight c# %} 
     [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
     public delegate int CALLBACK(IntPtr a, IntPtr b);
-{% end highlight %} 
+{% endhighlight %} 
   
 采用Marshal.GetDelegateForFunctionPointer来转换一个函数指针为一个委托
 {% highlight c# %} 
