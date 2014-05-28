@@ -25,6 +25,7 @@ struct CPPStruct
 {% endhighlight %}
 
 C#中的结构体定义
+{% highlight c# %} 
 namespace CSharpLibrary
 {
     [StructLayoutAttribute(LayoutKind.Sequential)]
@@ -37,19 +38,20 @@ namespace CSharpLibrary
         public string d; 
     }
 }
+{% endhighlight %} 
 
 * C++和C#的结构体的内存布局必须一致
 * 在C++中使用#using引用C#生成的DLL
-  #using "..\release\CSharpLibrary.dll" 
+    #using "..\release\CSharpLibrary.dll" 
 * C++工程中必须开启公共语言运行时/clr的支持
 * 在C++使用using namespace来访问C#中的类和方法，采用gcnew访问托管对象，注意使用帽子‘^’，而不是星星‘*’
-  using namespace CSharpLibrary; 
-  CSharpClass ^dll = gcnew CSharpClass(); 
+    using namespace CSharpLibrary; 
+    CSharpClass ^dll = gcnew CSharpClass(); 
 
 #第一种实现
 
 C#中实现的方法如下：根据参数num的个数来生成结构体，并将结果保存在results参数中，注意到第一个参数使用了ref关键字和IntPtr
-
+{% highlight c# %} 
 public void CSharpSimpleInterface(ref IntPtr results, int num)
 {
     for (int i = 0; i < num; i++)
@@ -63,6 +65,7 @@ public void CSharpSimpleInterface(ref IntPtr results, int num)
         Marshal.StructureToPtr(b, (IntPtr)(results.ToInt32() + i * Marshal.SizeOf(b)), true);
     }
 }
+{% endhighlight %} 
     
 
 OK，现在我们在C++进行如下调用即可
@@ -97,13 +100,14 @@ int WINAPI cpp_callback(void* p, void* p2)
 C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过统一的接口调用不同的实现。但二者又有明显的区别，简单说来，委托对象是真正的对象，而函数指针变量只是函数的入口地址。
 
 与cpp_callback函数相对应，在C#中定义如下的一个委托
-  [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
-  public delegate int CALLBACK(IntPtr a, IntPtr b);
+    [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
+    public delegate int CALLBACK(IntPtr a, IntPtr b);
   
 采用Marshal.GetDelegateForFunctionPointer来转换一个函数指针为一个委托
- CALLBACK callback = (CALLBACK)Marshal.GetDelegateForFunctionPointer(func, typeof(CALLBACK));
+    CALLBACK callback = (CALLBACK)Marshal.GetDelegateForFunctionPointer(func, typeof(CALLBACK));
  
 完整代码如下
+{% highlight c# %} 
   [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
   public delegate int CALLBACK(IntPtr a, IntPtr b);
 
@@ -125,7 +129,8 @@ C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过
           Marshal.FreeHGlobal(p2);
       } 
   }
-  
+{% endhighlight %} 
+ 
   OK,现在转到C++
   {% highlight cpp %} 
   vector<struct CPPStruct> sAA;
