@@ -1,15 +1,17 @@
 ---
 layout: post
-title: "How_to_invoke_C#_in_C++"
+title: "如何在C++中调用C#的dll"
 tagline: null
-category: null
+categories: [C++, C#]
 tags: []
-published: true---
+published: true
+---
+
 如何在C++中调用C#的dll和方法？
 
 我们将场景简化为:开发人员A用C#语言实现了一个根据用户的输入生成若干条数据的接口，另外一个开发人员B使用了C++进行UI开发，他需要动态将这些数据逐条显示在UI控件中。
 
-# C++和C#的结构体定义
+# C++和C#的调用
 
 C++中的结构体定义
 struct CPPStruct
@@ -44,7 +46,7 @@ namespace CSharpLibrary
 
 #第一种实现
 
-C#
+C#中实现的方法如下：根据参数num的个数来生成结构体，并将结果保存在results参数中，注意到第一个参数使用了ref关键字和IntPtr
 
 public void CSharpSimpleInterface(ref IntPtr results, int num)
 {
@@ -74,7 +76,7 @@ for(int i = 0; i < num; i++)
 #第二种实现
 如果num数很大，或者每条信息的生成都比较耗时(比如Web异步调用)，这样将导致CSharpSimpleInterface的调用时间变长，另一种可行的方法是使用回调函数来处理。
 
-C++定义了callback函数，处理单条数据
+C++定义了如下的回调函数来处理单条数据
 int WINAPI cpp_callback(void* p, void* p2)
 {
 	struct CPPStruct* a = (struct CPPStruct*)p;
@@ -87,19 +89,16 @@ int WINAPI cpp_callback(void* p, void* p2)
 	return 0;
 }
 
-vector<struct CPPStruct> sAA;
-dll->CSharpInterface((System::IntPtr)&cpp_callback, (System::IntPtr)&sAA, 20);
-
 C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过统一的接口调用不同的实现。但二者又有明显的区别，简单说来，委托对象是真正的对象，而函数指针变量只是函数的入口地址。
 
-与cpp_callback函数相对应，定义如下的一个委托
+与cpp_callback函数相对应，在C#中定义如下的一个委托
   [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
   public delegate int CALLBACK(IntPtr a, IntPtr b);
   
 采用Marshal.GetDelegateForFunctionPointer来转换一个函数指针为一个委托
  CALLBACK callback = (CALLBACK)Marshal.GetDelegateForFunctionPointer(func, typeof(CALLBACK));
  
- 完整代码如下
+完整代码如下
   [UnmanagedFunctionPointerAttribute(CallingConvention.Cdecl)]
   public delegate int CALLBACK(IntPtr a, IntPtr b);
 
@@ -124,4 +123,4 @@ C#的委托和C/C++的函数指针都描述了方法/函数的签名，并通过
   
   OK,现在转到C++，
   vector<struct CPPStruct> sAA;
-	dll->CSharpCallbackInterface((System::IntPtr)&callback, (System::IntPtr)&sAA, 1000);
+  dll->CSharpCallbackInterface((System::IntPtr)&cpp_callback, (System::IntPtr)&sAA, 1000);
