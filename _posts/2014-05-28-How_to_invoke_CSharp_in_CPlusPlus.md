@@ -2,7 +2,7 @@
 layout: post
 title: "如何在C++中调用C#的dll"
 tagline: null
-categories: [CPP, CSharp, 回调函数]
+categories: [CPP, CSharp]
 tags: [技术, 代码]
 published: true
 ---
