@@ -4,7 +4,7 @@ title: Introduction to ASMLibrary
 tagline: null
 keywords: ASMLibrary
 categories: [技术]
-tags: [开源, CPP]
+tags: [开源, C++, OpenCV]
 group: archive
 icon: leaf
 ---
