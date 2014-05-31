@@ -2,8 +2,8 @@
 layout: post
 title: "如何在C++中调用C#的dll"
 tagline: null
-categories: [CPP, CSharp]
-tags: [技术, 代码]
+categories: [技术]
+tags: [CPP, CSharp]
 published: true
 ---
 
