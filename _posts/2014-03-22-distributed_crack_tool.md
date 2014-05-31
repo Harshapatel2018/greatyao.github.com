@@ -2,8 +2,8 @@
 layout: post
 keywords: 分布式 重定向 Linux
 title: "管道重定向"
-categories: [CPP, 管道, Linux]
-tags: [代码, 工作]
+categories: [技术]
+tags: [Linux, C++]
 group: archive
 icon: leaf
 ---
