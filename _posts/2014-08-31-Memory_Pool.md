@@ -314,6 +314,7 @@ ngx_create_pool(size_t size, ngx_log_t *log)
 {% endhighlight %}
 
 下图是内存池初始化时刻的示意图
+
 ![image](/assets/post-images/nginx_create.jpg)
 
 内存池销毁时，会释放掉所有与给该内存池相关的大块和小块内存。在内存池销毁之前，还必须做一些数据的清理工作，如文件的关闭等。前面说到cleanup指向了一个清理函数，因此只需要对内存池中的析构函数遍历调用即可。  
@@ -516,4 +517,5 @@ ngx_pfree(ngx_pool_t *pool, void *p)
 {% endhighlight %}
 
 下图是内存池运行一段时间的示意图
+
 ![image](/assets/post-images/nginx_snapshot.jpg)
