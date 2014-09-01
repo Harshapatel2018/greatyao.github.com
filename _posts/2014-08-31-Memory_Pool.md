@@ -16,6 +16,7 @@ published: true
 
 <h2>类STL内存池技术</h2>  
 阅读gcc 4.9.1中的有关libstdc++的STL的源代码，会发现STL提供了很多种Allocator的实现。在libstdc++-v3\include\ext目录下，STL中实现了好多种不同的allocator：
+
     *   __gnu_cxx::new_allocator: 简单地封装了new和delete操作符，通常就是std::allocator
     *   __gnu_cxx::malloc_allocator: 简单地封装了malloc和free函数
     *   __gnu_cxx::array_allocator: 申请一堆内存
