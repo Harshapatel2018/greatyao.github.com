@@ -246,3 +246,8 @@ chunk_alloc()的具体过程为：
 	}
     }
 {% endhighlight %} 
+
+### 总结 ###
+应用程序在某个时候申请了32字节的大小，发现free_list[4]链表头为空，于是STL将会调用refill操作申请32\*20=640个bytes空间，然后allocate_chunck操作发现内存池中没有空闲内存可用，将由new操作符申请32\*20\*2=1280个字节，其中的640bytes由给free_list[4]管理，尚余的640bytes由start_free和end_free两个游标管理；这时候假设应用程序又申请了16个字节内存，同样发现free_list[2]链表头为空，于是与上面类似也会refill-->allocate_chunck调用序列将会执行，这时候发现start_free和end_free管理的内存空间比较充足，直接划分出16\*20个bytes给free_list[2]，start_free游标继续下移；然后，应用程序释放了一块16bytes的大小，Allocator将其插入到free_list[2]的链表表头节点中，形成如下的状态示意图。
+
+不难发现，该内存池分配器存在一个很大的缺点，allocate_chunk函数中由std::new申请大内存永远无法得到释放，除非程序生命周期结束。如果应用程序不断的向STL申请小块内存直至系统内存枯竭，然后一次性释放，将会看到释放到的内存将会全部交给free_list链表数组进行管理而不是操作系统，这时候再申请超过128字节的内存或者其他非STL库申请内存将会失效！！！
