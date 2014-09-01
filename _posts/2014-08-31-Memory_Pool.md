@@ -517,3 +517,8 @@ ngx_pfree(ngx_pool_t *pool, void *p)
 
 下图是内存池运行一段时间的示意图
 ![image](/assets/post-images/nginx_snapshot.jpg)
+
+### 总结 ###
+前面说到，nginx并没有提供释放内存的接口，那么nginx是如何完成内存释放的呢？总不能一直申请，用不释放啊。针对这个问题，nginx利用了web server应用的特殊场景来完成：一个web server总是不停的接受connection和request，所以nginx就将内存池分了不同的等级，有进程级的内存池、connection级的内存池、request级的内存池。也就是说，创建好一个worker进程的时候，同时为这个worker进程创建一个内存池，待有新的连接到来后，就在worker进程的内存池上为该连接创建起一个内存池；连接上到来一个request后，又在连接的内存池上为request创建起一个内存池。这样，在request被处理完后，就会释放request的整个内存池，连接断开后，就会释放连接的内存池。
+
+## Python对象的内存池技术
