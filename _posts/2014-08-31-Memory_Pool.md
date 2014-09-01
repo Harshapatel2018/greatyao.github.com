@@ -313,6 +313,9 @@ ngx_create_pool(size_t size, ngx_log_t *log)
 }
 {% endhighlight %}
 
+下图是内存池初始化时刻的示意图
+![image](/assets/post-images/nginx_create.jpg)
+
 内存池销毁时，会释放掉所有与给该内存池相关的大块和小块内存。在内存池销毁之前，还必须做一些数据的清理工作，如文件的关闭等。前面说到cleanup指向了一个清理函数，因此只需要对内存池中的析构函数遍历调用即可。  
 
 {% highlight cpp %}
@@ -352,3 +355,165 @@ ngx_destroy_pool(ngx_pool_t *pool)
     }
 }
 {% endhighlight %}
+
+###内存的申请
+nginx向内存池中申请内存由ngx_palloc和ngx_pnalloc完成，这两个函数作用类型，唯一的区别在于是否对内存进行对齐操作。
+
+内存池中分配内存的具体流程如下：
+
+1. 对于大块内存（即ngx_create_pool中的size参数，也就是内存池创建时指定的内存大小）直接由ngx_palloc_large分配；对于小块内存则转2；
+2. 遍历pool链表，通过last和end两个游标寻找是否有合适的空间，有则返回该内存，同时更新游标；否则转3；
+3. 通过ngx_palloc_block重新申请一个内存块
+
+{% highlight cpp %}
+void *
+ngx_palloc(ngx_pool_t *pool, size_t size)
+{
+    u_char      *m;
+    ngx_pool_t  *p;
+
+    if (size <= pool->max) {
+
+        //遍历pool链表寻找合适大小的空间
+        p = pool->current;
+        do {
+            m = ngx_align_ptr(p->d.last, NGX_ALIGNMENT);
+
+			//有合适的空间
+            if ((size_t) (p->d.end - m) >= size) {
+                p->d.last = m + size;
+
+                return m;
+            }
+
+            p = p->d.next;
+
+        } while (p);
+
+		//没有合适的，重新申请一块内存块
+        return ngx_palloc_block(pool, size);
+    }
+
+    //大块内存申请
+    return ngx_palloc_large(pool, size);
+}
+{% endhighlight %}
+
+大块内存的申请即ngx_palloc_large直接通过ngx_alloc（其实是malloc的简单封装）向操作系统申请，然后将其链接到内存池中的large链表中。
+{% highlight cpp %}
+void *
+ngx_palloc_large(ngx_pool_t *pool, size_t size)
+{
+    void              *p;
+    ngx_uint_t         n;
+    ngx_pool_large_t  *large;
+
+    p = ngx_alloc(size, pool->log);
+    if (p == NULL) {
+        return NULL;
+    }
+
+    n = 0;
+
+    //将分配到的内存链入pool的large链中，  
+    //首先考虑原始pool在之前已经分配过large内存的情况 
+    for (large = pool->large; large; large = large->next) {
+        if (large->alloc == NULL) {
+            large->alloc = p;
+            return p;
+        }
+
+        if (n++ > 3) {
+            break;
+        }
+    }
+
+    //如果该pool之前并未分配large内存或者链表深度超过3，则新建一个ngx_pool_large_t来管理
+    //大块内存  
+    large = ngx_palloc(pool, sizeof(ngx_pool_large_t));
+    if (large == NULL) {
+        ngx_free(p);
+        return NULL;
+    }
+
+    large->alloc = p;
+    large->next = pool->large;
+    pool->large = large;
+
+    return p;
+}
+{% endhighlight %}
+
+紧接着，我们来剖析ngx_palloc_block()函数，新建一个与pool同等大小的内存块，将其链入到pool的链表末尾节点，同时更新pool中的current节点。
+{% highlight cpp %}
+void *
+ngx_palloc_block(ngx_pool_t *pool, size_t size)
+{
+    u_char      *m;
+    size_t       psize;
+    ngx_pool_t  *p, *new, *current;
+
+	//计算内存块大小
+    psize = (size_t) (pool->d.end - (u_char *) pool);
+
+    //与内存池创建时类似，更新相关游标和字段
+    m = ngx_memalign(NGX_POOL_ALIGNMENT, psize, pool->log);
+    if (m == NULL) {
+        return NULL;
+    }
+
+    new = (ngx_pool_t *) m;
+
+    new->d.end = m + psize;
+    new->d.next = NULL;
+    new->d.failed = 0;
+
+    m += sizeof(ngx_pool_data_t);
+    m = ngx_align_ptr(m, NGX_ALIGNMENT);
+    new->d.last = m + size;
+    //字段初始化结束
+
+    
+    current = pool->current;
+
+    for (p = current; p->d.next; p = p->d.next) {
+        if (p->d.failed++ > 4) {
+			//失败次数4次以上，表明当前内存块中的可用内存被再次分配到的几率相当低了
+			//因此将节点往前进
+            current = p->d.next;
+        }
+    }
+
+    p->d.next = new;//将分配的block链入内存池链表的尾节点  
+
+    pool->current = current ? current : new;
+
+    return m;
+}
+{% endhighlight %}
+
+### 内存的释放 ###
+在nginx中，小块内存除了在内存池销毁之外是不能释放的，但是大块内存却可以。ngx_pfree函数就是用来控制大块内存的释放，代码非常简单，遍历large链表中的alloc字段来寻找相对应的large结构，然后调用ngx_free（等同于free）来释放内存。
+{% highlight cpp %}
+ngx_int_t
+ngx_pfree(ngx_pool_t *pool, void *p)
+{
+    ngx_pool_large_t  *l;
+
+    for (l = pool->large; l; l = l->next) {
+        if (p == l->alloc) {
+            ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool->log, 0,
+                           "free: %p", l->alloc);
+            ngx_free(l->alloc);
+            l->alloc = NULL;
+
+            return NGX_OK;
+        }
+    }
+
+    return NGX_DECLINED;
+}
+{% endhighlight %}
+
+下图是内存池运行一段时间的示意图
+![image](/assets/post-images/nginx_snapshot.jpg)
