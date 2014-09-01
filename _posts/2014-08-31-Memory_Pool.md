@@ -92,7 +92,8 @@ __pool_alloc内存分配器只适用于小块内存的管理，如果申请的�
 	      __scoped_lock sentry(_M_get_mutex());
 	      _Obj* __restrict__ __result = *__free_list;
 	      if (__builtin_expect(__result == 0, 0))
-		     __ret = static_cast<_Tp*>(_M_refill(_M_round_up(__bytes)));/* 链表头为空，表明该规格的内存已经售罄，需要调用refill重新进货 */
+	      	     /* 链表头为空，表明该规格的内存已经售罄，需要调用refill重新进货 */
+		     __ret = static_cast<_Tp*>(_M_refill(_M_round_up(__bytes)));
 	      else
 		{
 		  /* 该链表尚有可用空间，直接交付使用，并将其从对应的freelist链表中移除*/
@@ -221,3 +222,27 @@ chunk_alloc()的具体过程为：
 {% endhighlight %} 
 
 ### 内存释放 ###
+相对而言，__pool_alloc分配器的内存释放过程比较简单，主要工作由deallocate函数完成，它接受两个参数，一个是指向要释放的内存块的指针p，另外一个表示要释放的内存块的大小n。如果n超过128bytes，则交由delete操作去处理；否则将该内存块加到相应的空闲链表中
+
+{% highlight cpp %}
+    template<typename _Tp>
+    void __pool_alloc<_Tp>::deallocate(pointer __p, size_type __n)
+    {
+      if (__builtin_expect(__n != 0 && __p != 0, true))
+	{
+	  const size_t __bytes = __n * sizeof(_Tp);
+	  if (__bytes > static_cast<size_t>(_S_max_bytes) || _S_force_new > 0)
+	    ::operator delete(__p); //大小超过128字节，直接由delete处理
+	  else
+	    {
+	      _Obj* volatile* __free_list = _M_get_free_list(__bytes);//找到相对应的空闲链表
+	      _Obj* __q = reinterpret_cast<_Obj*>(__p);
+
+	      __scoped_lock sentry(_M_get_mutex());
+		  //将该内存嫁接到原始链表头
+	      __q ->_M_free_list_link = *__free_list;
+	      *__free_list = __q;
+	    }
+	}
+    }
+{% endhighlight %} 
