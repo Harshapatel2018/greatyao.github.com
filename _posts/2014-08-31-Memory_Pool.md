@@ -160,13 +160,13 @@ chunk_alloc()的具体过程为：
     size_t __total_bytes = __n * __nobjs;
     size_t __bytes_left = _S_end_free - _S_start_free;
     
-    if (__bytes_left >= __total_bytes)//空闲内存 >= n\*20，对应于情况1
+    if (__bytes_left >= __total_bytes)//空闲内存 >= n*20，对应于情况1
       {
 	__result = _S_start_free;
 	_S_start_free += __total_bytes;
 	return __result ;
       }
-    else if (__bytes_left >= __n)//n <= 可用内存 < n\*20，对应于情况2
+    else if (__bytes_left >= __n)//n <= 可用内存 < n*20，对应于情况2
       {
 	__nobjs = (int)(__bytes_left / __n);
 	__total_bytes = __n * __nobjs;
@@ -222,7 +222,7 @@ chunk_alloc()的具体过程为：
 {% endhighlight %} 
 
 ### 内存释放 ###
-相对而言，__pool_alloc分配器的内存释放过程比较简单，主要工作由deallocate函数完成，它接受两个参数，一个是指向要释放的内存块的指针p，另外一个表示要释放的内存块的大小n。如果n超过128bytes，则交由delete操作去处理；否则将该内存块加到相应的空闲链表中
+相对而言，__pool_alloc分配器的内存释放过程比较简单，主要工作由deallocate函数完成，它接受两个参数，一个是指向要释放的内存块的指针p，另外一个表示要释放的内存块的大小n。如果n超过128bytes，则交由std::delete操作去处理；否则将该内存块加到相应的空闲链表中
 
 {% highlight cpp %}
     template<typename _Tp>
@@ -248,6 +248,106 @@ chunk_alloc()的具体过程为：
 {% endhighlight %} 
 
 ### 总结 ###
-应用程序在某个时候申请了32字节的大小，发现free_list[4]链表头为空，于是STL将会调用refill操作申请32\*20=640个bytes空间，然后allocate_chunck操作发现内存池中没有空闲内存可用，将由new操作符申请32\*20\*2=1280个字节，其中的640bytes由给free_list[4]管理，尚余的640bytes由start_free和end_free两个游标管理；这时候假设应用程序又申请了16个字节内存，同样发现free_list[2]链表头为空，于是与上面类似也会refill-->allocate_chunck调用序列将会执行，这时候发现start_free和end_free管理的内存空间比较充足，直接划分出16\*20个bytes给free_list[2]，start_free游标继续下移；然后，应用程序释放了一块16bytes的大小，Allocator将其插入到free_list[2]的链表表头节点中，形成如下的状态示意图。
+应用程序在某个时候申请了32字节的大小，发现free_list[4]链表头为空，于是STL将会调用refill操作申请32\*20=640个字节空间，然后allocate_chunck操作发现内存池中没有空闲内存可用，将由new操作符申请32\*20\*2=1280个字节，其中的640字节由给free_list[4]管理，尚余的640字节由start_free和end_free两个游标管理；这时候假设应用程序又申请了16个字节内存，同样发现free_list[2]链表头为空，于是与上面类似refill-->allocate_chunck调用序列将会执行，这时候发现start_free和end_free管理的内存空间比较充足，直接划分出16\*20个字节给free_list[2]，start_free游标继续下移；然后，应用程序释放了一块16字节的大小(注意不是上一步而是在此之前申请到的)，Allocator将其插入到free_list[2]的链表表头节点中，形成如下的状态示意图。
 
 不难发现，该内存池分配器存在一个很大的缺点，allocate_chunk函数中由std::new申请大内存永远无法得到释放，除非程序生命周期结束。如果应用程序不断的向STL申请小块内存直至系统内存枯竭，然后一次性释放，将会看到释放到的内存将会全部交给free_list链表数组进行管理而不是操作系统，这时候再申请超过128字节的内存或者其他非STL库申请内存将会失效！！！
+
+## nginx内存池技术 ##
+nginx中与内存相关的操作主要在文件 os/unix/ngx_alloc.{h,c} 和 core/ngx_palloc.{h,c} 中实现，我们首先看一下与内存池相关的数据结构定义：
+
+{% highlight cpp %}
+typedef struct {    //内存池的数据结构模块  
+    u_char               *last;    //块内存的可分配的内存的起始位置  
+    u_char               *end;     //块内存的结束位置  
+    ngx_pool_t           *next;    //链接到下一个内存块，内存池的很多块内存就是通过该指针连成链表的  
+    ngx_uint_t            failed;  //记录内存分配不能满足需求的失败次数  
+} ngx_pool_data_t;   //结构用来维护内存池的数据块，供用户分配之用。
+
+struct ngx_pool_t {  //内存池的管理分配模块  
+    ngx_pool_data_t       d;         //内存池的数据块（参见上面），设为d  
+    size_t                max;       //数据块大小，小块内存的最大值  
+    ngx_pool_t           *current;   //指向当前或本内存池  
+    ngx_chain_t          *chain;     //该指针挂接一个ngx_chain_t结构  
+    ngx_pool_large_t     *large;     //指向大块内存分配（nginx中大块内存分配直接采用malloc)  
+    ngx_pool_cleanup_t   *cleanup;   //析构函数，挂载内存释放时需要清理资源的一些必要操作  
+    ngx_log_t            *log;       //内存分配相关的日志记录  
+};  
+
+struct ngx_pool_large_t {  //大块数据分配的结构体
+    ngx_pool_large_t     *next;  //链表指针
+    void                 *alloc; //大块内存地址
+}; 
+{% endhighlight %} 
+
+### 内存池创建和销毁 ###
+nginx内存池的创建非常简单，由函数ngx_create_pool来完成，申请一块size大小的内存，把它分配给 ngx_poo_t。nginx的内存对齐按16位对齐。
+
+{% highlight cpp %}
+ngx_pool_t *
+ngx_create_pool(size_t size, ngx_log_t *log)
+{
+    ngx_pool_t  *p;
+
+    p = ngx_memalign(NGX_POOL_ALIGNMENT, size, log);
+    if (p == NULL) {
+        return NULL;
+    }
+
+	//计算内存池的数据区域，初始化内存池数据数据的相关数据
+    p->d.last = (u_char *) p + sizeof(ngx_pool_t);
+    p->d.end = (u_char *) p + size;
+    p->d.next = NULL;
+    p->d.failed = 0;
+
+    size = size - sizeof(ngx_pool_t);
+    p->max = (size < NGX_MAX_ALLOC_FROM_POOL) ? size : NGX_MAX_ALLOC_FROM_POOL;
+
+    p->current = p;
+    p->chain = NULL;
+    p->large = NULL;
+    p->cleanup = NULL;
+    p->log = log;
+
+    return p;
+}
+{% endhighlight %}
+
+内存池销毁时，会释放掉所有与给该内存池相关的大块和小块内存。在内存池销毁之前，还必须做一些数据的清理工作，如文件的关闭等。前面说到cleanup指向了一个清理函数，因此只需要对内存池中的析构函数遍历调用即可。  
+
+{% highlight cpp %}
+void
+ngx_destroy_pool(ngx_pool_t *pool)
+{
+    ngx_pool_t          *p, *n;
+    ngx_pool_large_t    *l;
+    ngx_pool_cleanup_t  *c;
+
+    //清理工作
+    for (c = pool->cleanup; c; c = c->next) {
+        if (c->handler) {
+            ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool->log, 0,
+                           "run cleanup: %p", c);
+            c->handler(c->data);
+        }
+    }
+
+	//释放大块内存
+    for (l = pool->large; l; l = l->next) {
+
+        ngx_log_debug1(NGX_LOG_DEBUG_ALLOC, pool->log, 0, "free: %p", l->alloc);
+
+        if (l->alloc) {
+            ngx_free(l->alloc);
+        }
+    }
+
+	//释放小块内存
+    for (p = pool, n = pool->d.next; /* void */; p = n, n = n->d.next) {
+        ngx_free(p);
+
+        if (n == NULL) {
+            break;
+        }
+    }
+}
+{% endhighlight %}
