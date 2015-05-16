@@ -41,6 +41,7 @@ V2EX客户端里面的列表用到了Android兼容库
     compile 'com.android.support:cardview-v7:21.0.3'
     compile 'com.android.support:recyclerview-v7:21.0.3'
 刚开始对于V2EX的主题列表和回帖列表，我都是用ListView实现的。不过后来发现总存在一些问题，在Nexus 5上没什么问题，但是在其他手机上列表会出现一些锯齿。于是我用RecyclerView来重新实现了一遍。CardView则对每个话题Item进行卡片式布局。
+
 <img src="https://raw.github.com/greatyao/v2ex-android/master/snapshots/hot.png" width="400" height="700"/>
 
 
@@ -64,19 +65,23 @@ V2EX客户端里面的列表用到了Android兼容库
 
     交互式页面指示器控件，完美配合ViewPager控件。
 
+- floatingactionbutton
+
+    浮动Action Button控件，完美配合ListView、RecyleView。
+
 <img src="https://raw.github.com/greatyao/v2ex-android/master/snapshots/favor.png" width="400" height="700"/>
 
 - snackbar
      Snackbar 是 Material Design 下的一个组件，这是模仿Snackbar的效果实现了一款兼容5.0系统以下的Snackbar。
     
 
-- floatingactionbutton
-
-    浮动Action Button控件，完美配合ListView、RecyleView。
-
-
 除此以外，还使用了
 
 - [友盟](http://www.umeng.com)的SDK作统计分析和自动更新
 - [BadgeView](https://github.com/stefanjauker/BadgeView)作数字提醒
 - [Pinyin4J](http://pinyin4j.sourceforge.net) 将汉字转化为对应的拼音字母
+- 
+
+## 
+
+最后,欢迎大家pull request来为V2EX-Android添加新功能。
