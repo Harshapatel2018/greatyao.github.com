@@ -80,7 +80,6 @@ V2EX客户端里面的列表用到了Android兼容库
 - [友盟](http://www.umeng.com)的SDK作统计分析和自动更新
 - [BadgeView](https://github.com/stefanjauker/BadgeView)作数字提醒
 - [Pinyin4J](http://pinyin4j.sourceforge.net) 将汉字转化为对应的拼音字母
-- 
 
 ## 
 
