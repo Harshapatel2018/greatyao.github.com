@@ -52,10 +52,10 @@ V2EX客户端里面的列表用到了Android兼容库
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.loopj.android:android-async-http:1.4.6'
-    
-~~compile 'com.github.mrengineer13:snackbar:1.1.0'~~
-
     compile 'com.melnykov:floatingactionbutton:1.3.0'
+    compile 'de.hdodenhof:circleimageview:1.3.0'
+    compile 'com.hannesdorfmann:swipeback:1.0.0'
+
 
 - android-async-http
 
@@ -75,10 +75,14 @@ V2EX客户端里面的列表用到了Android兼容库
 
 <img src="https://raw.github.com/greatyao/v2ex-android/master/snapshots/favor.png" width="400" height="700"/>
 
-~~- snackbar~~
-~~Snackbar 是 Material Design 下的一个组件，这是模仿Snackbar的效果实现了一款兼容5.0系统以下的Snackbar。~~
-    
+- de.hdodenhof:circleimageview
+ 
+    圆形ImageView。
 
+- com.hannesdorfmann:swipeback
+
+    滑动手势返回。
+    
 除此以外，还使用了
 
 - [友盟](http://www.umeng.com)的SDK作统计分析和自动更新
@@ -87,4 +91,4 @@ V2EX客户端里面的列表用到了Android兼容库
 
 ## 反馈
 
-最后,欢迎大家pull request来为V2EX-Android添加新功能。
+最后,欢迎大家pull request来为掌上[V2EX](https://github.com/greatyao/v2ex-android)添加新功能。
