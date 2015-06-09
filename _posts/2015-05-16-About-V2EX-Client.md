@@ -1,6 +1,6 @@
 ---
 layout: post
-title: V2EX客户端
+title: 掌上V2EX
 tagline: null
 keywords: V2EX
 categories: [技术]
@@ -32,7 +32,7 @@ Android和iOS市场上的V2EX客户端我基本上都下载安装过，有一段
 V2EX客户端同时还实现了节点、话题、用户三个Scheme,方便用户通过话题链接、节点链接、用户链接直接打开V2EX客户端进行相关信息浏览。此外，还对用户已经浏览过的话题作记忆处理并在界面上进行提示。
 
 绝大部分数据是通过调用V2EX的Json
-API解析得到的，少部分涉及到用户个人信息则是通过Http模拟浏览器请求页面。但是Json API调用有严格的调用次数和时间限制，为了避免这个问题，我将数据缓存到文件系统中，如果用户不手动刷新，则会直接从缓存中读取的，当然这并不能解决根本问题，每个小时180次请求的警戒线还是很容易就突破，这时候服务器返回403禁止访问，会很大的影响用户体验。我在后续版本中会考虑绕过Json API用模拟浏览器访问来代替。
+API解析得到的，少部分涉及到用户个人信息则是通过Http模拟浏览器请求页面。但是Json API调用有严格的调用次数和时间限制，为了避免这个问题，我将数据缓存到文件系统中，如果用户不手动刷新，则会直接从缓存中读取的，当然这并不能解决根本问题，每个小时120次请求的警戒线还是很容易就突破，这时候服务器返回403禁止访问，会很大的影响用户体验。我在后续版本中会考虑绕过Json API用模拟浏览器访问来代替。
 
 ## 开发相关
 开发用的是 Android Studio，除了编译速度感觉略慢一点点，就没有什么其它的大问题了，而且智能提示更智能，此外用 gradle 做库依赖确实方便，真的可以甩 eclipse 几条大街了。
@@ -52,7 +52,7 @@ V2EX客户端里面的列表用到了Android兼容库
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.astuetz:pagerslidingtabstrip:1.0.1'
     compile 'com.loopj.android:android-async-http:1.4.6'
-    compile 'com.github.mrengineer13:snackbar:1.1.0'
+    ~~compile 'com.github.mrengineer13:snackbar:1.1.0'~~
     compile 'com.melnykov:floatingactionbutton:1.3.0'
 
 - android-async-http
@@ -73,9 +73,9 @@ V2EX客户端里面的列表用到了Android兼容库
 
 <img src="https://raw.github.com/greatyao/v2ex-android/master/snapshots/favor.png" width="400" height="700"/>
 
-- snackbar
+~~- snackbar~~
 
-     Snackbar 是 Material Design 下的一个组件，这是模仿Snackbar的效果实现了一款兼容5.0系统以下的Snackbar。
+     ~~Snackbar 是 Material Design 下的一个组件，这是模仿Snackbar的效果实现了一款兼容5.0系统以下的Snackbar。~~
     
 
 除此以外，还使用了
