@@ -205,9 +205,19 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
 
     $ ssh minion@172.24.4.6
     [minion@k8-hdx2ewllqx-0-5vptn5l4ahtt-kube-minion-i6jyfvsvxkzu ~]$ sudo su
+    bash-4.3# docker images
+    REPOSITORY                       TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+    gcr.io/google_containers/pause   0.8.0               2c40b0526b63        7 months ago        241.7 kB
+    docker.io/kubernetes/redis       v1                  690e15a8b149        9 months ago        146 MB
     bash-4.3# docker ps
-    CONTAINER ID        IMAGE                                  COMMAND             CREATED             STATUS              PORTS               NAMES
-    6522a94e8c2a        gcr.io/google_containers/pause:0.8.0   "/pause"            58 minutes ago      Up 55 minutes                           k8s_POD.49eee8c2_redis-bldhr_default_8f5a1e81-7739-11e5-8d21-fa163ec6c383_cb8d1102
-    277bbcfca7df        gcr.io/google_containers/pause:0.8.0   "/pause"            58 minutes ago      Up 56 minutes                           k8s_POD.39750b55_redis-master_default_690a053d-7739-11e5-8d21-fa163ec6c383_1da0a23d
-    fbc0bf70079e        gcr.io/google_containers/pause:0.8.0   "/pause"            58 minutes ago      Up 56 minutes                           k8s_POD.ecf0e8f4_redis-sentinel-ii2go_default_9ca36eec-7739-11e5-8d21-fa163ec6c383_9a95d2d0
+    CONTAINER ID        IMAGE                                  COMMAND             CREATED              STATUS                  PORTS               NAMES
+    1866120545f6        kubernetes/redis:v1                    "sh -c /run.sh"     About a minute ago   Up Less than a second                       k8s_redis.4bbe3b3e_redis-dlxj7_default_ccc119fc-7ef9-11e5-87b3-fa163e2fb366_cbe31593
+    bc2a96dc9160        kubernetes/redis:v1                    "sh -c /run.sh"     About a minute ago   Up Less than a second                       k8s_redis.4bbe3b3e_redis-z67e3_default_cbf80d70-7ef9-11e5-87b3-fa163e2fb366_6ea9b053
+    e9fea01bd56c        kubernetes/redis:v1                    "sh -c /run.sh"     22 minutes ago       Up 20 minutes                               k8s_sentinel.db990c9f_redis-sentinel-1n4g6_default_cc8db8c0-7ef9-11e5-87b3-fa163e2fb366_42df9559
+    87e78c6984d1        kubernetes/redis:v1                    "sh -c /run.sh"     22 minutes ago       Up 18 minutes                               k8s_sentinel.db990c9f_redis-sentinel-hqiro_default_ccaffeb1-7ef9-11e5-87b3-fa163e2fb366_9f58a050
+    4eacf594245b        gcr.io/google_containers/pause:0.8.0   "/pause"            49 minutes ago       Up 45 minutes                               k8s_POD.49eee8c2_redis-dlxj7_default_ccc119fc-7ef9-11e5-87b3-fa163e2fb366_32d7780c
+    82d783a8d9ff        gcr.io/google_containers/pause:0.8.0   "/pause"            49 minutes ago       Up 45 minutes                               k8s_POD.49eee8c2_redis-z67e3_default_cbf80d70-7ef9-11e5-87b3-fa163e2fb366_6c05f139
+    1b03b2b8901f        gcr.io/google_containers/pause:0.8.0   "/pause"            49 minutes ago       Up 44 minutes                               k8s_POD.ecf0e8f4_redis-sentinel-hqiro_default_ccaffeb1-7ef9-11e5-87b3-fa163e2fb366_bf617ae8
+    25600c0130c8        gcr.io/google_containers/pause:0.8.0   "/pause"            49 minutes ago       Up 44 minutes                               k8s_POD.ecf0e8f4_redis-sentinel-1n4g6_default_cc8db8c0-7ef9-11e5-87b3-fa163e2fb366_5e3768ad
 
+*注意：如果在docker镜像中能看到pause和redis镜像,说明已经成功部署了,只是等待的时间比较长,我的测试环境用了3个多小时*
