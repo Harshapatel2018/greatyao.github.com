@@ -108,14 +108,14 @@ Magnum一般有两个子模块，magnum-api和magnum-conductor,为了验证condu
 2.创建BayModel对象
 
     $ magnum baymodel-create --name k8sbaymodel \
-                       --image-id fedora-21-atomic-5 \
-                       --keypair-id testkey \
-                       --external-network-id public \
-                       --dns-nameserver 8.8.8.8 \
-                       --flavor-id m1.small \
-                       --docker-volume-size 5 \
-                       --network-driver flannel \
-                       --coe kubernetes
+       --image-id fedora-21-atomic-5 \
+       --keypair-id testkey \
+       --external-network-id public \
+       --dns-nameserver 8.8.8.8 \
+       --flavor-id m1.small \
+       --docker-volume-size 5 \
+       --network-driver flannel \
+       --coe kubernetes
                        
 3.创建Bay对象，结果将会一个Kubernetes master节点和一个minion节点:
 
