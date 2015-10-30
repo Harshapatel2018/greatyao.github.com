@@ -93,3 +93,26 @@ published: true
     $ cd /home/devstack
     $ source openrc admin admin
     $ glance image-list
+
+# 窥探Magnum
+
+Magnum一般有两个子模块，magnum-api和magnum-conductor,为了验证conductor服务是否健康运行
+
+    $ magnum service-list
+
+1.创建key
+
+    $ test -f ~/.ssh/id_rsa.pub || ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
+    $ nova keypair-add --pub-key ~/.ssh/id_rsa.pub testkey
+    
+2.创建BayModel对象
+
+    $ magnum baymodel-create --name k8sbaymodel \
+                       --image-id fedora-21-atomic-5 \
+                       --keypair-id testkey \
+                       --external-network-id public \
+                       --dns-nameserver 8.8.8.8 \
+                       --flavor-id m1.small \
+                       --docker-volume-size 5 \
+                       --network-driver flannel \
+                       --coe kubernetes
