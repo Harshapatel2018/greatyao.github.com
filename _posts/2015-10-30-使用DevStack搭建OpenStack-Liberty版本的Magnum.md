@@ -85,6 +85,7 @@ published: true
     $ ./unstack.sh && ./stack.sh
     
 7.验证
+
 整个安装过程耗时一个小时左右，取决于你的网络状况。在浏览器中打开http://20.0.0.11/即可访问horizon。默认Devstack创建admin和demo两个用户，密码是第5步中localrc中设置的password。
 
 或者可以使用OpenStack的命令行工具来验证
