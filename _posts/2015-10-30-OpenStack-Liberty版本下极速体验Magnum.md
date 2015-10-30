@@ -114,7 +114,7 @@ Magnum一般有两个子模块，magnum-api和magnum-conductor,为了验证condu
     +----+-----------+------------------+-------+
 
 
-1.创建key
+1.创建密钥对
 
     $ test -f ~/.ssh/id_rsa.pub || ssh-keygen -t rsa -N "" -f ~/.ssh/id_rsa
     $ nova keypair-add --pub-key ~/.ssh/id_rsa.pub testkey
