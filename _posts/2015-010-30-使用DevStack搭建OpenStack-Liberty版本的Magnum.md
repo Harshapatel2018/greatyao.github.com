@@ -13,7 +13,7 @@ published: true
 
 在VMware Workstations建台虚拟机，Ubuntu 14.04 LTS，CPU两个核以上，内存至少4G以上，硬盘100G，两个网卡（一个主机模式，另一个NAT模式）。
 
-    vi /etc/network/interfaces
+    $ vi /etc/network/interfaces
     ##主机模式，用于openstack内部模块通信 
     auto eth0
     iface eth0 inet static
