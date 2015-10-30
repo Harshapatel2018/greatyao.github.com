@@ -70,7 +70,7 @@ published: true
     HOST_IP=20.0.0.11
     END
 
-6. 运行Devstack
+6.运行Devstack
     
     $ ./stack.sh
 
