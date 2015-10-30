@@ -144,3 +144,8 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
 更直观的，可以在Horizon的编配里面查看相关栈或Bay的详情
 ![image](/assets/post-images/2015-10-30-70479d1c-db71-4383-dd15-8f5df12bb94c.jpg)
 
+4.下载Kubernetes源码
+
+    $ wget https://github.com/kubernetes/kubernetes/releases/download/v1.0.1/kubernetes.tar.gz
+    $ tar -xvzf kubernetes.tar.gz
+
