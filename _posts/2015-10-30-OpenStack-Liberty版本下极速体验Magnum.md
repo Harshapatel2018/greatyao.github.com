@@ -183,7 +183,7 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
     | name               | k8sbay                                                     |
     +--------------------+------------------------------------------------------------+
     
-** 注意：使用Kubernetes部署Pod时会从Google container registry下载基础的Pause镜像，但众所周知由于国内特殊的网络环境，会导致容器无法部署成功。所以咱最好还是在主机上拨个VPN。**
+*注意：使用Kubernetes部署Pod时会从Google container registry下载基础的Pause镜像，但众所周知由于国内特殊的网络环境，会导致容器无法部署成功。所以咱最好还是在主机上拨个VPN。*
 
 
 6.验证
