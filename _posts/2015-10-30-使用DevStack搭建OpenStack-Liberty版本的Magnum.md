@@ -13,7 +13,7 @@ published: true
 {% include codepiano/setup %}
 
 ---
-10月15日，OpenStack发布了Liberty版本，其中一个变化就是容器服务Magnum正式推出1.0版本，只是各大Linux发行版还没有发布magnum的安装包，因此需要从源码直接构建。下面给出自己的基于Devstack的方式的完整安装实践过程。
+10月15日，OpenStack发布了Liberty版本，其中一个变化就是容器即服务模块Magnum正式推出1.0版本，只是各大Linux发行版还没有发布magnum的安装包，因此需要从源码直接构建。下面给出自己的基于Devstack的方式的完整安装实践过程。
 
 # 环境准备 
 
@@ -83,3 +83,12 @@ published: true
 注意：使用的是stack用户运行。在安装过程中，可能会提示apt-get下载源错误，重复执行上述安装命令；其他情况，可以再次执行安装命令。
 
     $ ./unstack.sh && ./stack.sh
+    
+7.验证
+整个安装过程耗时一个小时左右，取决于你的网络状况。这时候在浏览器中打开http://20.0.0.11/即可访问horizon。默认Devstack创建admin和demo两个用户，密码是第5步中localrc中设置的password。
+
+或者可以使用OpenStack的命令行工具来验证
+
+    $ cd /home/devstack
+    $ source openrc admin admin
+    $ glance image-list
