@@ -163,3 +163,22 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
     $ magnum rc-create --manifest ./redis-sentinel-controller.yaml --bay k8sbay
 
 这样我们就创建了一个redis的ReplicationController，由这个Controller来调度和管理redis容器，通过magnum命令可以查看IP与状态。
+
+    $ magnum bay-show k8sbay
+    +--------------------+------------------------------------------------------------+
+    | Property           | Value                                                      |
+    +--------------------+------------------------------------------------------------+
+    | status             | CREATE_COMPLETE                                            |
+    | uuid               | f0ce1f2d-a1a9-4a47-977f-15244625463d                       |
+    | status_reason      | Stack CREATE completed successfully                        |
+    | created_at         | 2015-10-20T12:56:07+00:00                                  |
+    | updated_at         | 2015-10-20T13:13:41+00:00                                  |
+    | bay_create_timeout | 0                                                          |
+    | api_address        | https://172.24.4.4:6443                                    |
+    | baymodel_id        | 33d8e94d-f867-437f-80b4-10d5d6885c8a                       |
+    | node_count         | 1                                                          |
+    | node_addresses     | [u'172.24.4.6']                                            |
+    | master_count       | 1                                                          |
+    | discovery_url      | https://discovery.etcd.io/6533dd3e28c0ff7e410cff633fad90ad |
+    | name               | k8sbay                                                     |
+    +--------------------+------------------------------------------------------------+
