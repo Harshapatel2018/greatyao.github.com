@@ -140,3 +140,7 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
     | 4656ff13-9210-47b5-9c27-8c26309d5e04 | k8-fpoxo3qagq-0-bax3fvtb5pf2-kube_master-riv2fk732dbd | ACTIVE | -          | Running     | private=10.0.0.5, 172.24.4.5 |
     | 45b7c2af-29de-4f59-b5ba-b784e0ef503b | k8-hdx2ewllqx-0-5vptn5l4ahtt-kube-minion-i6jyfvsvxkzu | ACTIVE | -          | Running     | private=10.0.0.6, 172.24.4.6 |
     +--------------------------------------+-------------------------------------------------------+--------+------------+-------------+------------------------------+
+    
+更直观的，可以在Horizon的编配里面查看相关栈或Bay的详情
+![image](/assets/post-images/2015-10-30-70479d1c-db71-4383-dd15-8f5df12bb94c.jpg)
+
