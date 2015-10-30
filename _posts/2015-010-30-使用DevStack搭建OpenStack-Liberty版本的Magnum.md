@@ -14,14 +14,14 @@ published: true
 在VMware Workstations建台虚拟机，Ubuntu 14.04 LTS，CPU两个核以上，内存至少4G以上，硬盘100G，两个网卡（一个主机模式，另一个NAT模式）。
 
     $ vi /etc/network/interfaces
-    ##主机模式，用于openstack内部模块通信 
+    #仅主机模式，用于openstack内部模块通信 
     auto eth0
     iface eth0 inet static
         address 20.0.0.11
         gateway 20.0.0.1
         netmask 255.255.255.0
 
-    #外部网络，虚拟机访问外网的出口
+    #NAT模式，用于虚拟机访问外网的外部网络
     auto eth1
     iface eth1 inet static
         address 172.24.54.222
