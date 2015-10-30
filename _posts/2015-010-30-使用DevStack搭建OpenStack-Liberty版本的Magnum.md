@@ -71,7 +71,7 @@ published: true
     END
 
 6. 运行Devstack
-
+    
     $ ./stack.sh
 
 注意：使用的是stack用户运行。在安装过程中，可能会提示apt-get下载源错误，重复执行上述安装命令；其他情况，可以再次执行安装命令。
