@@ -13,7 +13,7 @@ published: true
 {% include codepiano/setup %}
 
 ---
-10月15日，OpenStack发布了Liberty版本，其中一个变化就是容器即服务模块Magnum正式推出1.0版本，只是各大Linux发行厂商还没有发布magnum的安装包，因此需要从源码直接构建。下面给出自己的基于Devstack的方式的完整安装实践过程。
+10月15日，OpenStack发布了Liberty版本，其中一个变化就是容器即服务模块Magnum正式推出1.0版本，只是各大Linux发行厂商还没有发布magnum的安装包，因此需要从源码直接构建。下面给出自己基于Devstack方式的完整安装实践过程。
 
 # 环境准备 
 
