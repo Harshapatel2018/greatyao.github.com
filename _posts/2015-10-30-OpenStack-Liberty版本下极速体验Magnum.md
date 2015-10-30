@@ -107,6 +107,12 @@ published: true
 Magnum一般有两个子模块，magnum-api和magnum-conductor,为了验证conductor服务是否健康运行
 
     $ magnum service-list
+    +----+-----------+------------------+-------+
+    | id | host      | binary           | state |
+    +----+-----------+------------------+-------+
+    | 1  | localhost | magnum-conductor | up    |
+    +----+-----------+------------------+-------+
+
 
 1.创建key
 
