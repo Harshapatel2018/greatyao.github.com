@@ -149,3 +149,17 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
     $ wget https://github.com/kubernetes/kubernetes/releases/download/v1.0.1/kubernetes.tar.gz
     $ tar -xvzf kubernetes.tar.gz
 
+5.部署Redis容器集群
+
+    $ cd kubernetes/examples/redis
+    $ magnum pod-create --manifest ./redis-master.yaml --bay k8sbay
+    
+    $ magnum coe-service-create --manifest ./redis-sentinel-service.yaml --bay k8sbay
+    
+    $ sed -i 's/\(replicas: \)1/\1 2/' redis-controller.yaml
+    $ magnum rc-create --manifest ./redis-controller.yaml --bay k8sbay
+    
+    $ sed -i 's/\(replicas: \)1/\1 2/' redis-sentinel-controller.yaml
+    $ magnum rc-create --manifest ./redis-sentinel-controller.yaml --bay k8sbay
+
+这样我们就创建了一个redis的ReplicationController，由这个Controller来调度和管理redis容器，通过magnum命令可以查看IP与状态。
