@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 使用DevStack搭建OpenStack Liberty版本的Magnum
+title: OpenStack Liberty版本Magnum模块的极速体验
 tagline: null
 keywords: OpenStack
 categories: [OpenStack]
