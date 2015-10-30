@@ -63,7 +63,6 @@ published: true
     # su stack
     $ cd /home/devstack
     $ cat > localrc << END
-    [[local|localrc]]
     DATABASE_PASSWORD=password
     RABBIT_PASSWORD=password
     SERVICE_TOKEN=password
