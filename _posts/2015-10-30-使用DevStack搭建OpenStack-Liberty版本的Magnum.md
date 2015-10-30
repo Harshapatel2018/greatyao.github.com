@@ -117,7 +117,7 @@ Magnum一般有两个子模块，magnum-api和magnum-conductor,为了验证condu
        --network-driver flannel \
        --coe kubernetes
                        
-3.创建Bay对象，结果将会一个Kubernetes master节点和一个minion节点:
+3.创建Bay对象
 
     $ magnum bay-create --name k8sbay --baymodel k8sbaymodel --node-count 1
 
@@ -130,3 +130,13 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
     | f0ce1f2d-a1a9-4a47-977f-15244625463d | k8sbay | 1          | 1            | CREATE_COMPLETE |
     +--------------------------------------+--------+------------+--------------+-----------------+
       
+      
+上述的Bay对象将会创建一个Kubernetes master节点和一个minion节点:  
+
+    $ nova list
+    +--------------------------------------+-------------------------------------------------------+--------+------------+-------------+------------------------------+
+    | ID                                   | Name                                                  | Status | Task State | Power State | Networks                     |
+    +--------------------------------------+-------------------------------------------------------+--------+------------+-------------+------------------------------+
+    | 4656ff13-9210-47b5-9c27-8c26309d5e04 | k8-fpoxo3qagq-0-bax3fvtb5pf2-kube_master-riv2fk732dbd | ACTIVE | -          | Running     | private=10.0.0.5, 172.24.4.5 |
+    | 45b7c2af-29de-4f59-b5ba-b784e0ef503b | k8-hdx2ewllqx-0-5vptn5l4ahtt-kube-minion-i6jyfvsvxkzu | ACTIVE | -          | Running     | private=10.0.0.6, 172.24.4.6 |
+    +--------------------------------------+-------------------------------------------------------+--------+------------+-------------+------------------------------+
