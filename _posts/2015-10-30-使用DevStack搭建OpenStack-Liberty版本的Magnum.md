@@ -189,3 +189,12 @@ Bays对象初始化为CREATE_IN_PROGRESS状态，当创建完成后会更新为C
 6.验证
 
 剩下来就是ssh到相应的虚拟机中，通过docker命令或redis客户端来控制和访问容器了。
+
+    $ ssh minion@172.24.4.6
+    [minion@k8-hdx2ewllqx-0-5vptn5l4ahtt-kube-minion-i6jyfvsvxkzu ~]$ sudo su
+    bash-4.3# docker ps
+    CONTAINER ID        IMAGE                                  COMMAND             CREATED             STATUS              PORTS               NAMES
+    6522a94e8c2a        gcr.io/google_containers/pause:0.8.0   "/pause"            58 minutes ago      Up 55 minutes                           k8s_POD.49eee8c2_redis-bldhr_default_8f5a1e81-7739-11e5-8d21-fa163ec6c383_cb8d1102
+    277bbcfca7df        gcr.io/google_containers/pause:0.8.0   "/pause"            58 minutes ago      Up 56 minutes                           k8s_POD.39750b55_redis-master_default_690a053d-7739-11e5-8d21-fa163ec6c383_1da0a23d
+    fbc0bf70079e        gcr.io/google_containers/pause:0.8.0   "/pause"            58 minutes ago      Up 56 minutes                           k8s_POD.ecf0e8f4_redis-sentinel-ii2go_default_9ca36eec-7739-11e5-8d21-fa163ec6c383_9a95d2d0
+
