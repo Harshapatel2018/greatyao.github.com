@@ -34,21 +34,26 @@ published: true
 # 部署过程
 
 1.安装git
+
     $ sudo su
     # apt-get install git
 
 2.下载devstack源码
+
     # cd /home
     # git clone https://github.com/openstack-dev/devstack 
 
 3.创建stack用户运行
+
     # cd /home/devstack/tools/
     # ./create-stack-user.sh
 
 4.修改devstack目录权限,让stack用户可以运行
-# chown -R stack:stack /home/devstack
+
+    # chown -R stack:stack /home/devstack
 
 5.切换到stack用户，进入devstack目录下，创建localrc文件
+
     # su stack
     $ cd /home/devstack
     $ cat > localrc << END
@@ -66,8 +71,9 @@ published: true
     END
 
 6. 运行Devstack
+
     $ ./stack.sh
 
 注意：使用的是stack用户运行。在安装过程中，可能会提示apt-get下载源错误，重复执行上述安装命令；其他情况，可以再次执行安装命令。
 
-$  ./unstack.sh && ./stack.sh
+    $ ./unstack.sh && ./stack.sh
