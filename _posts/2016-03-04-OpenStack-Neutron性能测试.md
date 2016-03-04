@@ -2,11 +2,18 @@
 layout: post
 title: OpenStack Neutron性能测试
 tagline: null
-category: null
-tags: []
+keywords: OpenStack
+categories: [OpenStack]
+tags: [OpenStack, Neutron, iperf]
+group: archive
+icon: leaf
 published: true
+---
+
+{% include codepiano/setup %}
 
 ---
+
 # 环境
 OpenStack硬件环境为：一台控制节点、一台网络节点、四台计算节点（总计104核 、326G内存、4.8T硬盘）。所有节点通过千兆网路由连接，通过iperf可以检查两个节点间的速率，最高约为120MB/s。
 
