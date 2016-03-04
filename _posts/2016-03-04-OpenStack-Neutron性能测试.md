@@ -18,8 +18,7 @@ OpenStack网络模块为neutron+ovs。
 本次测试环境创建的虚拟机操作系统为ubuntu14.04 x86_64，规格配置为cpu1核，内存1G，硬盘10G。
 
 ##	场景一 （东西流量，一对一） 
-一台iperf server(172.16.100.4)，另一台跑iperf client(172.16.100.x)，两者组成一个vpc，每一组的client都往自己组里面的server打iperf东西向的流量。
-下图为不同的VPC数与带宽之间的关系。
+一台iperf server(172.16.100.4)，另一台跑iperf client(172.16.100.x)，两者组成一个vpc，每一组的client都往自己组里面的server打iperf东西向的流量。下表为不同的VPC数与带宽之间的关系。
 
 
 
