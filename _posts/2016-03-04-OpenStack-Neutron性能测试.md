@@ -18,7 +18,10 @@ OpenStack网络模块为neutron+ovs。
 本次测试环境创建的虚拟机操作系统为ubuntu14.04 x86_64，规格配置为cpu1核，内存1G，硬盘10G。
 
 ##	场景一 （东西流量，一对一） 
-一台iperf server(172.16.100.4)，另一台跑iperf client(172.16.100.x)，两者组成一个vpc，每一组的client都往自己组里面的server打iperf东西向的流量。下表为不同的VPC数与带宽之间的关系。
+一台iperf server(172.16.100.4)，另一台跑iperf client(172.16.100.x)，两者组成一个vpc，每一组的client都往自己组里面的server打iperf东西向的流量。
+![image](/assets/post-images/2016-03-04-90ab162b-ae4d-4433-e7c9-60e4b6c5abd4.jpg)
+
+下表为不同的VPC数与带宽之间的关系。
 
 
 
@@ -31,7 +34,13 @@ OpenStack网络模块为neutron+ovs。
 **注：其中红色的表示两台虚拟机处于同一计算节点，这样两者通信不需要走网络节点，故而带宽比较高。**
 
 ##	场景二 （南北流量，多对一）
-一台固定iperf server（通过路由器连接到外网，浮动IP地址192.168.1.140），另外若干台iperf client挂在内网通过路由接到外网。每个client都往server（192.168.1.140）上打iperf南北向流量，下表为不同的client数与带宽之间的关系。
+一台固定iperf server（通过路由器连接到外网，浮动IP地址192.168.1.140），另外若干台iperf client挂在内网通过路由接到外网。每个client都往server（192.168.1.140）上打iperf南北向流量。
+
+![image](/assets/post-images/2016-03-04-046227fc-4812-4f8b-ef38-9d3ce6bb6415.jpg)
+
+
+下表为不同的client数与带宽之间的关系。
+
 
 
 **注：同场景一类似，client和server两者处于同一节点上时的带宽也相对较两者处于不同节点上时的带宽要快。**
@@ -42,6 +51,10 @@ OpenStack网络模块为neutron+ovs。
 
 ##	场景三 （南北流量，多对多）
 5台固定iperf server挂在内网10.200.0.0/24，通过路由连接到外网（浮动IP分别为192.168.1.140/142/145/146/147），另外有5台iperf client挂在内网10.100.200.0/24，这5个client组成一个VPC，也通过路由连接到外网。在VPC内部，5个client分别往5个server打iperf南北向流量。
+
+![image](/assets/post-images/2016-03-04-1f563dc9-ef94-4928-c3f9-4ef74409aa93.jpg)
+
+
  
 
 |  | 1VPC | 5VPC| 20VPC|30VPC|
