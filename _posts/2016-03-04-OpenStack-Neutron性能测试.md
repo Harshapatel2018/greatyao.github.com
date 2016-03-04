@@ -2,13 +2,9 @@
 layout: post
 title: OpenStack Neutron性能测试
 tagline: null
-keywords: OpenStack
-categories: [OpenStack]
-tags: [OpenStack, Neutron]
+category: null
+tags: []
 published: true
----
-
-{% include codepiano/setup %}
 
 ---
 # 环境
