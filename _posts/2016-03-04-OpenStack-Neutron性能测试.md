@@ -45,7 +45,13 @@ Server3	470M	1.78G	175M	96M
 Server4	465M	1.97G	282M	91M
 Server5	470M	1.72G	282M	84M
 平均	4.88G	1.77G	246M	69M
-注:类似的，当client和server同处于同一计算节点上，其两者通信的带宽会比较大（从1VPC的12G左右，到20VPC仍然有几百兆）；而两者处于不同计算节点上，两者通信的带宽相对较小（从1VPC的400-500M下降到20VPC只有10-50M左右）
+注:类似的，当client和server同处于同一计算节点上，其两者通信的带宽会比较大（从1VPC的12G左右，到20VPC仍然有几百兆）；而两者处于不同计算节点上，两者通信的带宽相对较小（从1VPC的400-500M下降到20VPC只有10-50M左右。
+
+| Tables        | Are           | Cool  |
+| ------------- |:-------------:| -----:|
+| col 3 is      | right-aligned | $1600 |
+| col 2 is      | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
 
  
  
