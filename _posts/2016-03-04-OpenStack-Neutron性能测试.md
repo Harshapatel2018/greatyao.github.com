@@ -18,6 +18,13 @@ OpenStack网络模块为neutron+ovs，本次测试主要测在大量虚拟机并
 一台iperf server(172.16.100.4)，另一台跑iperf client(172.16.100.x)，内网打iperf
  
 下表为不同的VPC数与带宽之间的关系
+|             | 1VPC           | Cool  |
+| ------------|:-------------:| -----:|
+| 带宽(Mbps)  | right-aligned | $1600 |
+| col 2 is    | centered      |   $12 |
+| zebra stripes | are neat      |    $1 |
+
+
 	1组	4组	5组	9组	20组	30组	50组 	75 组	100组 
 BandWidth
 Mbps	914 
