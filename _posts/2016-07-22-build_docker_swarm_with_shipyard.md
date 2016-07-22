@@ -1,8 +1,16 @@
 ---
+layout: post
 title: 搭建Docker Swarm集群
 tags: docker,swarm,shipyard
-grammar_cjkRuby: true
+tagline: null
+keywords: Docker
+categories: [Docker, Swarm]
+group: archive
+icon: leaf
 ---
+
+{% include codepiano/setup %}
+
 
 官网上给出了几种Docker Swarm集群的部署方法，分别是基于[Docker ToolBox][1] 以及 [Amazon AWS][2] 。
 
