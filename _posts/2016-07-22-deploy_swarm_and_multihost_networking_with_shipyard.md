@@ -1,6 +1,6 @@
 ---
 layout: post
-title: 搭建Docker Swarm集群
+title: 使用Shipyard部署Docker Swarm集群和跨主机Overlay网络
 tags: [docker]
 tagline: null
 keywords: Docker
@@ -70,8 +70,7 @@ icon: leaf
  *   --restart=always 重启模式, always 表示永远
  *  -p 8400:8400 映射 consul的 rpc 端口8400
  *  -p 8500:8500 映射到公共 IP 这样方便我们使用 UI 界面
- *  -p 53:53/udp 绑定udp 端口53(默认 DNS端口)在 docker0 bridge 地址上
- *  -advertise 192.168.0.47 consul服务对外公布的 IP, 这里特意设置为0.47, 否则 service 会显示为内部的容器的 IP 地址, 这样就访问不到了
+ *  -advertise consul服务对外公布的 IP, 这里特意设置为192.168.0.47, 否则 service 会显示为内部的容器的 IP 地址
  *  -client 0.0.0.0 consul 监听的地址
 
 
@@ -128,6 +127,8 @@ icon: leaf
 下面创建一个overlay网络
 
     docker -H 192.168.0.56:3375 network create -d overlay test-net
+
+注意：**使用docker客户端对docker swarm 集群进行操作时需要指定集群的地址**，我们实验中创建的集群对外暴露的IP和端口是**192.168.0.56:3375**，而使用端口**2375**则是对单个docker主机进行操作**。
  
  查看swarm集群中所有的网络
  
@@ -143,7 +144,7 @@ icon: leaf
      2a0ec5e15ce8        node2/none              null                
      33df13f850c5        test-net                overlay
 
-可以看到test-net网络同时在56和57上创建，下面我们在此网络上创建容器
+可以看到test-net网络同时在节点node1和node2上创建，下面我们在此网络上运行简单的ubuntu容器
 
     $ docker -H 192.168.0.56:3375 run -itd --net test-net --name test4 ubuntu:14.04 
     db7113bae6d06922a133cef92f01701c0f35156b374ae14e31e13ac54500e979
@@ -162,7 +163,7 @@ icon: leaf
     5f5b793a358d        swarm:latest               "/swarm join --addr 1"   2 hours ago         Up 2 hours          2375/tcp                                node1/shipyard-swarm-agent
     7f20411fc504        swarm:latest               "/swarm manage --host"   2 hours ago         Up 2 hours          2375/tcp, 192.168.0.56:3375->3375/tcp   node1/shipyard-swarm-manager,node1/shipyard-controller/swarm
 
-下面我们测试跨主机网络的连通性，我们通过attach到test4容器上ping test5来验证分散在不同节点上的容器的网络连通性
+下面我们测试跨主机网络的连通性，我们通过attach到test4容器上ping容器test5来验证分散在不同节点上的容器的网络连通性
 
     $ docker -H 192.168.0.56:3375 attach test4
     root@db7113bae6d0:/# 
