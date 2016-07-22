@@ -177,6 +177,12 @@ icon: leaf
     4 packets transmitted, 4 received, 0% packet loss, time 2998ms
     rtt min/avg/max/mdev = 0.221/0.271/0.295/0.029 ms
 
+----
+最后欣赏shipyard两张截图
+
+![image](/assets/post-images/shipyard.png)
+
+![image](/assets/post-images/shipyard-2.png)
 
   [1]: https://docs.docker.com/swarm/install-w-machine
   [2]: https://docs.docker.com/swarm/install-manual/
