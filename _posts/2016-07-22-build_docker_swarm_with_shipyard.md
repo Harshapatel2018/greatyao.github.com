@@ -1,7 +1,7 @@
 ---
 layout: post
 title: 搭建Docker Swarm集群
-tags: docker,swarm,shipyard
+tags: [docker]
 tagline: null
 keywords: Docker
 categories: [Docker, Swarm]
@@ -83,12 +83,12 @@ icon: leaf
     docker run -d --restart=always --name shipyard-rethinkdb rethinkdb
 
 ## Step 2
-然后继续安装 swarm manager，**需要注意的是将192.168.0.47替换为实际上的 consul 节点的 ip地址**
+然后继续安装 swarm manager，需要注意的是**将192.168.0.47替换为实际上的 consul 节点的 ip地址**
 
     docker run -d -p 3375:3375 --restart=always --name shipyard-swarm-manager swarm:latest manage --host tcp://0.0.0.0:3375 consul://192.168.0.47:8500
     
 ## Step 3
-接着在manager节点上安装 swarm agent，这里需要注意的是192.168.0.47是consul节点的IP地址，192.168.0.56是manager的IP地址，将两者替换为你实际环境中的节点地址
+接着在manager节点上安装 swarm agent，这里需要注意的是**192.168.0.47是consul节点的IP地址，192.168.0.56是manager的IP地址，将两者替换为你实际环境中的节点地址**
 
     docker run -d --restart=always --name shipyard-swarm-agent swarm:latest join --addr 192.168.0.56:2375 consul://192.168.0.47:8500
 
@@ -103,7 +103,7 @@ icon: leaf
 # 部署Swam Agent节点
 节点agent的部署比较简单，只需要参考manager节点上的步骤3
 
-    docker run -d --restart=always --name shipyard-swarm-agent swarm:latest join --addr 192.168.0.56:2375 consul://192.168.0.47:8500
+    docker run -d --restart=always --name shipyard-swarm-agent swarm:latest join --addr 192.168.0.57:2375 consul://192.168.0.47:8500
 
 **类似的，192.168.0.47是consul节点的IP地址，192.168.0.57是agent节点的IP地址，将两者替换为你实际环境中的节点地址**
 
@@ -121,7 +121,7 @@ icon: leaf
 
     DOCKER_OPTS="-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --cluster-store=consul://192.168.0.47:8500 --cluster-advertise=eth0:2375"
     
-这里192.168.0.47为consul节点的IP地址，eth0为manager/agent节点上192.168.0.56/57所在的网卡名称。然后重新启动Docker服务
+这里**192.168.0.47为consul节点的IP地址，eth0为manager/agent节点上192.168.0.56/57所在的网卡名**。然后重新启动Docker服务
 
     service start docker
     
